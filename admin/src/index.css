@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #ec4913;
+  --font-display: "Epilogue", sans-serif;
+}
+
+* { font-family: var(--font-display), sans-serif; }

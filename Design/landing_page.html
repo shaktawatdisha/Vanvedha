@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Spice Shop Landing Page</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec4913",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221510",
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <!-- Top Navigation Bar -->
+            <header
+                class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/10 px-6 lg:px-40 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-3 text-primary">
+                        <span class="material-symbols-outlined text-3xl">skillet</span>
+                        <h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">Spice
+                            Shop</h2>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-9">
+                        <a class="text-slate-700 hover:text-primary transition-colors text-sm font-medium leading-normal"
+                            href="#">Shop</a>
+                        <a class="text-slate-700 hover:text-primary transition-colors text-sm font-medium leading-normal"
+                            href="#">Recipes</a>
+                        <a class="text-slate-700 hover:text-primary transition-colors text-sm font-medium leading-normal"
+                            href="#">About</a>
+                        <a class="text-slate-700 hover:text-primary transition-colors text-sm font-medium leading-normal"
+                            href="#">Gifts</a>
+                    </nav>
+                </div>
+                <div class="flex flex-1 justify-end gap-4 lg:gap-8 items-center">
+                    <label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+                        <div
+                            class="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden border border-primary/10">
+                            <div class="text-slate-400 bg-background-light flex items-center justify-center pl-4 pr-1">
+                                <span class="material-symbols-outlined">search</span>
+                            </div>
+                            <input
+                                class="form-input flex w-full min-w-0 flex-1 border-none bg-background-light focus:ring-0 h-full placeholder:text-slate-400 px-2 text-base font-normal"
+                                placeholder="Search spices..." value="" />
+                        </div>
+                    </label>
+                    <div class="flex gap-3">
+                        <button
+                            class="flex items-center justify-center rounded-lg h-10 w-10 bg-background-light hover:bg-primary/10 text-slate-700 transition-colors">
+                            <span class="material-symbols-outlined">shopping_bag</span>
+                        </button>
+                        <button
+                            class="flex items-center justify-center rounded-lg h-10 w-10 bg-background-light hover:bg-primary/10 text-slate-700 transition-colors">
+                            <span class="material-symbols-outlined">person</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <main class="flex-1">
+                <!-- Hero Section -->
+                <div class="px-6 lg:px-40 py-10">
+                    <div class="@container">
+                        <div class="flex flex-col gap-6 lg:gap-12 @[864px]:flex-row items-center">
+                            <div class="w-full bg-center bg-no-repeat aspect-video lg:aspect-square bg-cover rounded-xl shadow-2xl flex-1 border-8 border-white"
+                                data-alt="Vibrant ground spices in colorful ceramic bowls"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDV8jYaIyXIyRuOc_TUKZ_8MenrhGirSLxOwZ282g0pEswlmGAHi2MNvuQHkzGQUH5YKRH_sqm_2OpUzp1Pp0i-r0KT6EuYtVtlvfEX1DzR4Wl55DJ9dGxOSOln78iMY4iUgDGoQ-_47U2ctL0fYofsKk-s0KNC22kTz88LPrQi0SFhuuvHsgdX-hVlnZ3RCdgs53onFhSKlEKKeCikW-5evELZ4HP8nQ6fAG2UA8WQgqVmQ2Paxm8BkZFF072om9QH3Zg_YYxXVL3D");'>
+                            </div>
+                            <div class="flex flex-col gap-6 flex-1 text-center @[864px]:text-left">
+                                <div class="flex flex-col gap-4">
+                                    <span class="text-primary font-bold tracking-widest text-sm uppercase">Artisanal
+                                        Quality</span>
+                                    <h1
+                                        class="text-slate-900 text-4xl lg:text-6xl font-black leading-[1.1] tracking-tight">
+                                        Elevate Every <span class="text-primary">Meal</span>
+                                    </h1>
+                                    <p class="text-slate-600 text-lg leading-relaxed max-w-lg mx-auto @[864px]:mx-0">
+                                        Discover the world’s finest, ethically sourced spices delivered directly from
+                                        sustainable farms to your kitchen.
+                                    </p>
+                                </div>
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center @[864px]:justify-start">
+                                    <button
+                                        class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-primary text-white text-base font-bold transition-transform hover:scale-105">
+                                        Shop All Spices
+                                    </button>
+                                    <button
+                                        class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 border-2 border-primary/20 bg-white text-primary text-base font-bold transition-colors hover:bg-primary/5">
+                                        Our Story
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Trending Section -->
+                <div class="bg-white py-16 px-6 lg:px-40">
+                    <div class="flex items-end justify-between mb-10">
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-slate-900 text-3xl font-bold leading-tight tracking-tight">Trending Now</h2>
+                            <div class="h-1 w-20 bg-primary rounded-full"></div>
+                        </div>
+                        <a class="text-primary font-bold text-sm flex items-center gap-1 hover:underline" href="#">
+                            View all <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Product 1 -->
+                        <div class="group flex flex-col gap-4">
+                            <div class="relative overflow-hidden rounded-xl aspect-square bg-background-light">
+                                <img alt="Smoked Spanish Paprika"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    data-alt="Rich red smoked paprika powder in a jar"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuChxFHs-vQopXmMAyi3lPRINvsNsRd79hrGYxlyV08cb141SvK4k0PSAxevOMNB6fO7t2AG0LGSa8tARV8gJmnp_55xvScmwegy0qTkplM-tJAnaAoSWZcrZTECmJ1LQRqO8oh0ixu0hl6t5KIRckH2-y9jjJIerRwrT2egNwy_pw638N4Z_D0kM9mv9j2gDWFSWNbx6y_CHrtYQI3o6sVIeVLp7n3KXcyyXVnvl-btb1v5k6D_Ygrhe0QwI0ZvezFIk1nrMaJRBl31" />
+                                <button
+                                    class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur text-slate-900 py-2 rounded-lg font-bold opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
+                                    Quick Add
+                                </button>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-slate-900 text-lg font-bold">Smoked Spanish Paprika</h3>
+                                    <span class="text-primary font-bold">$12.00</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-amber-500">
+                                    <span class="material-symbols-outlined text-sm fill-1">star</span>
+                                    <span class="text-slate-500 text-sm font-medium">4.9 (124 reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product 2 -->
+                        <div class="group flex flex-col gap-4">
+                            <div class="relative overflow-hidden rounded-xl aspect-square bg-background-light">
+                                <img alt="Organic Turmeric Root"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    data-alt="Golden organic turmeric powder beside fresh root"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_UysNf-3Em0UwNw4WQaW3txm5V3jpipjgnrhYKmj05iku9qdJebCmw-SWIrN0N-wsSTMZeNTpcQhz2oBk4p3l7yebiS8-6sV682m6_du9kmBuI72UoBfniubJnufbs3eZMBJ6icoBiKi2OHMlsgC2ky3DTcC4NPumvkuNdb6rtO95DVutMmmTu7DDyOiesLI_jWCaOi820sIjEx6aVmGfhrM56VNwEvXRCv453gBiOGxSZ9qDAY0G9EXvcLeGUF-eNS9C9BFa5jko" />
+                                <button
+                                    class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur text-slate-900 py-2 rounded-lg font-bold opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
+                                    Quick Add
+                                </button>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-slate-900 text-lg font-bold">Organic Turmeric</h3>
+                                    <span class="text-primary font-bold">$10.00</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-amber-500">
+                                    <span class="material-symbols-outlined text-sm fill-1">star</span>
+                                    <span class="text-slate-500 text-sm font-medium">4.8 (89 reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product 3 -->
+                        <div class="group flex flex-col gap-4">
+                            <div class="relative overflow-hidden rounded-xl aspect-square bg-background-light">
+                                <img alt="Hand-Picked Saffron"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    data-alt="Delicate red saffron threads in a glass vial"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzuRVrE-SvfGPwChEitQkMcHr2pjZeg-R9hnH5qva3xc9TAFYW23QNbVP1U_Ce4IEYTpwqLFHWQtTeMPRBL4-qgEjNI8Pr4grboMaI5hddTYoW9OvJM4HBhkAslYi_QPGjy9LOQI49dnH5cJTVRFDALijGrwoqTNjivB-ryU5dE7j_zD1Rf84WrhlhRKB3GnysY8MKVC2ArXHAGb8VMeFLaEvATByjAFosooa4YGJDUYwS-DPMFL4fOq3_4M2JjTzSHHAb_018NMAU" />
+                                <button
+                                    class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur text-slate-900 py-2 rounded-lg font-bold opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
+                                    Quick Add
+                                </button>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-slate-900 text-lg font-bold">Premium Saffron</h3>
+                                    <span class="text-primary font-bold">$28.00</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-amber-500">
+                                    <span class="material-symbols-outlined text-sm fill-1">star</span>
+                                    <span class="text-slate-500 text-sm font-medium">5.0 (45 reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product 4 -->
+                        <div class="group flex flex-col gap-4">
+                            <div class="relative overflow-hidden rounded-xl aspect-square bg-background-light">
+                                <img alt="Tellicherry Peppercorns"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    data-alt="Whole black peppercorns in a wooden bowl"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBlqSEKXMQrd4AEErHq_Jw4QdUhsHA2_gGzeH38rjBdlkxZ04SUeXd-OYaU6LUo1igsqfvOifTWgifSiPhOTPYQTNfO-ufaKKjKrngYD9Wm4gD7ARirhHbqZJOaEA-ST3QTRIUHk28iO4Y1ZlOcR1xPO_g17vGEsEdkwcpH_ZxaEMSce9vwBsGzJ6U1_JbCrwnXhjJOI9CN1JR7AfiirPKmxBVcUVyktgfliAzK3Dp-VaI6h5Wj7ar15FzvBYdZaSHWjcp3Vr4sWg6" />
+                                <button
+                                    class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur text-slate-900 py-2 rounded-lg font-bold opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
+                                    Quick Add
+                                </button>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-slate-900 text-lg font-bold">Tellicherry Pepper</h3>
+                                    <span class="text-primary font-bold">$14.00</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-amber-500">
+                                    <span class="material-symbols-outlined text-sm fill-1">star</span>
+                                    <span class="text-slate-500 text-sm font-medium">4.7 (210 reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Why Us Section -->
+                <div class="px-6 lg:px-40 py-20 bg-background-light">
+                    <div class="max-w-3xl mb-12">
+                        <h2 class="text-slate-900 text-3xl lg:text-4xl font-black mb-4 tracking-tight">Why Choose Our
+                            Spice Shop?</h2>
+                        <p class="text-slate-600 text-lg">We believe that great food starts with exceptional
+                            ingredients. Quality you can taste in every pinch.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div
+                            class="flex flex-col gap-5 p-8 rounded-2xl bg-white shadow-sm border border-primary/5 hover:shadow-md transition-shadow">
+                            <div
+                                class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl">eco</span>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <h3 class="text-slate-900 text-xl font-bold">Ethically Sourced</h3>
+                                <p class="text-slate-500 leading-relaxed">Direct trade relationships with small-scale
+                                    farmers worldwide, ensuring fair wages and sustainable practices.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col gap-5 p-8 rounded-2xl bg-white shadow-sm border border-primary/5 hover:shadow-md transition-shadow">
+                            <div
+                                class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl">stockpot</span>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <h3 class="text-slate-900 text-xl font-bold">Freshly Ground</h3>
+                                <p class="text-slate-500 leading-relaxed">Small-batch processing and cold-grinding
+                                    techniques preserve the volatile oils for maximum aroma and flavor.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col gap-5 p-8 rounded-2xl bg-white shadow-sm border border-primary/5 hover:shadow-md transition-shadow">
+                            <div
+                                class="bg-primary/10 text-primary w-14 h-14 rounded-xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl">workspace_premium</span>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <h3 class="text-slate-900 text-xl font-bold">Chef Approved</h3>
+                                <p class="text-slate-500 leading-relaxed">Trusted by Michelin-star kitchens and home
+                                    gourmets alike for purity and consistent culinary performance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Newsletter / Footer CTA -->
+                <div class="bg-slate-900 text-white px-6 lg:px-40 py-20">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div class="flex flex-col gap-6">
+                            <h2 class="text-3xl lg:text-4xl font-black tracking-tight leading-tight">Join the Spice Club
+                                and <span class="text-primary">get 10% off</span> your first order</h2>
+                            <p class="text-slate-400 text-lg">Receive curated recipes, spice guides, and exclusive early
+                                access to our seasonal harvests.</p>
+                            <form class="flex flex-col sm:flex-row gap-3">
+                                <input
+                                    class="flex-1 bg-slate-800 border-none rounded-lg h-12 px-4 focus:ring-2 focus:ring-primary text-white"
+                                    placeholder="Enter your email" type="email" />
+                                <button
+                                    class="bg-primary hover:bg-primary/90 transition-colors h-12 px-8 rounded-lg font-bold">Subscribe</button>
+                            </form>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
+                            <div class="flex flex-col gap-4">
+                                <h4 class="font-bold text-white uppercase text-xs tracking-widest">Shop</h4>
+                                <ul class="flex flex-col gap-2 text-slate-400 text-sm">
+                                    <li><a class="hover:text-primary transition-colors" href="#">Individual Spices</a>
+                                    </li>
+                                    <li><a class="hover:text-primary transition-colors" href="#">Spice Blends</a></li>
+                                    <li><a class="hover:text-primary transition-colors" href="#">Gift Sets</a></li>
+                                    <li><a class="hover:text-primary transition-colors" href="#">Bundles</a></li>
+                                </ul>
+                            </div>
+                            <div class="flex flex-col gap-4">
+                                <h4 class="font-bold text-white uppercase text-xs tracking-widest">Company</h4>
+                                <ul class="flex flex-col gap-2 text-slate-400 text-sm">
+                                    <li><a class="hover:text-primary transition-colors" href="#">Our Story</a></li>
+                                    <li><a class="hover:text-primary transition-colors" href="#">Sustainability</a></li>
+                                    <li><a class="hover:text-primary transition-colors" href="#">Wholesale</a></li>
+                                    <li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
+                                </ul>
+                            </div>
+                            <div class="flex flex-col gap-4">
+                                <h4 class="font-bold text-white uppercase text-xs tracking-widest">Social</h4>
+                                <div class="flex gap-4">
+                                    <a class="text-slate-400 hover:text-primary transition-colors" href="#">
+                                        <svg class="w-6 h-6 fill-current" viewbox="0 0 24 24">
+                                            <path
+                                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                    <a class="text-slate-400 hover:text-primary transition-colors" href="#">
+                                        <svg class="w-6 h-6 fill-current" viewbox="0 0 24 24">
+                                            <path
+                                                d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-16 pt-8 border-t border-slate-800 text-slate-500 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p>© 2024 Spice Shop. All rights reserved.</p>
+                        <div class="flex gap-6">
+                            <a class="hover:text-primary" href="#">Privacy Policy</a>
+                            <a class="hover:text-primary" href="#">Terms of Service</a>
+                            <a class="hover:text-primary" href="#">Shipping Info</a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>

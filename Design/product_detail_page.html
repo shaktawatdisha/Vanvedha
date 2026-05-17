@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Product Detail - Smoked Spanish Paprika | Artisan Spices</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec4913",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221510",
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        body {
+            font-family: 'Epilogue', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display">
+    <!-- Top Navigation Bar -->
+    <header
+        class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-primary rounded-lg text-white">
+                    <span class="material-symbols-outlined text-2xl">eco</span>
+                </div>
+                <h2 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white uppercase">Artisan
+                    Spices</h2>
+            </div>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-10">
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Shop</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Recipes</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Our Story</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Wholesale</a>
+            </nav>
+            <!-- Action Icons -->
+            <div class="flex items-center gap-4">
+                <div class="relative hidden lg:block group">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary">search</span>
+                    <input
+                        class="pl-10 pr-4 py-2 bg-primary/5 border border-primary/10 rounded-full text-sm focus:ring-primary focus:border-primary focus:outline-none w-64"
+                        placeholder="Search spices..." type="text" />
+                </div>
+                <button class="p-2 hover:bg-primary/10 rounded-full transition-colors relative">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span
+                        class="absolute top-1 right-1 w-4 h-4 bg-primary text-white text-[10px] flex items-center justify-center rounded-full">2</span>
+                </button>
+                <button class="p-2 hover:bg-primary/10 rounded-full transition-colors">
+                    <span class="material-symbols-outlined">person</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-7xl mx-auto px-6 lg:px-10 py-12">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-sm font-medium text-slate-500 mb-8">
+            <a class="hover:text-primary" href="#">Home</a>
+            <span class="material-symbols-outlined text-xs">chevron_right</span>
+            <a class="hover:text-primary" href="#">Premium Spices</a>
+            <span class="material-symbols-outlined text-xs">chevron_right</span>
+            <span class="text-slate-900 dark:text-slate-100">Smoked Spanish Paprika</span>
+        </nav>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <!-- Left Side: Product Images -->
+            <div class="space-y-6">
+                <div class="relative aspect-square rounded-xl overflow-hidden bg-white shadow-sm group">
+                    <img alt="Product Image"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        data-alt="Minimalist glass spice jar with premium smoked paprika label"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUo1gzl96b8cWJXyMjM0BdlN_nNcGdBIZP5ylWZNxm8D9RSe9PRtPn_EsP12ONEAupbXlmPpLhPCAprJsCuEt84gk7Dgs-RWb-b_TuqUPN8xvFdbh5h46W1_hk74nK_SK0SULVSL5fX6M1JFHLr3abvZn79j1sHlatGfMdg7SlLcmBt2dhYaUpMQ3s0kJshNdQs7cj9Xug-t2d7aWtQvvy0YjovMUVDf4HZHZNMsHApkRQBTWfqc-HVQbHQyAlpTfgl25xmCyYqdRQ" />
+                    <div
+                        class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded text-xs font-bold uppercase tracking-widest">
+                        Premium Quality</div>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="aspect-[4/3] rounded-xl overflow-hidden bg-white shadow-sm">
+                        <img alt="Texture detail" class="w-full h-full object-cover"
+                            data-alt="Close up high quality texture of vibrant red paprika powder"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqyDtj-2ki1xWd9ExffzkUDIxc1hKQQ2e99g1ApFkzf4emUyKMAxWrc9zf46lu9321Ds7iSHOaYHdxlJDF8jfePLBKwVqsMqrhsORKRASsnPqv9ZCcG5gFL5uga4sQ8mjmk0qET2scm7G9-6TkvUTW6MmsYb4mol0BZiUSbalUS84Zj3qQWaK--XlPaxQGd1fwwd6uUtXNpiExoxY70srs4bujzeqCAHvhq6TA626y-46cJizvEUv2ZSj9rZtMmp8VRNOYdYASs4zH" />
+                    </div>
+                    <div class="aspect-[4/3] rounded-xl overflow-hidden bg-white shadow-sm">
+                        <img alt="Context Image" class="w-full h-full object-cover"
+                            data-alt="Artisan kitchen scene with fresh ingredients and paprika jar"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmp2AG1bQwM9lfRxnaEv_rZiCa9vzzxHHkadAummjukdnz65PUkBCHkpKgugLzvKslaOnPpZHn4JVaQOGBlFeo049-2vSMThbVP7mHCiMQVuDF3m2mTQiI0S-g7mxGly2csCz00aUfujLfOqOZSOnxG5YJt5w_erUE1M3H-QCVxHlTC3dXtECBjaZTxRsZ9b1WLsJwJy8HweSgS6qZ5tjUAfRN67a5-2gNrY3TfwmDAhWgxV5_etjMoUlYrukvN56THUJUBonS4tMf" />
+                    </div>
+                </div>
+            </div>
+            <!-- Right Side: Product Details -->
+            <div class="flex flex-col">
+                <div class="mb-2">
+                    <span class="text-primary font-bold text-sm tracking-widest uppercase">Single Origin • Murcia,
+                        Spain</span>
+                </div>
+                <h1 class="text-5xl font-black text-slate-900 dark:text-white mb-4 leading-tight">Smoked Spanish Paprika
+                </h1>
+                <!-- Ratings & Price -->
+                <div class="flex items-center gap-6 mb-8">
+                    <div class="flex items-center gap-1 text-primary">
+                        <span class="material-symbols-outlined fill text-xl">star</span>
+                        <span class="material-symbols-outlined fill text-xl">star</span>
+                        <span class="material-symbols-outlined fill text-xl">star</span>
+                        <span class="material-symbols-outlined fill text-xl">star</span>
+                        <span class="material-symbols-outlined fill text-xl">star</span>
+                        <span class="ml-2 text-sm font-semibold text-slate-500">128 Reviews</span>
+                    </div>
+                    <div class="h-4 w-px bg-slate-300"></div>
+                    <span class="text-3xl font-bold text-slate-900 dark:text-white">$12.00</span>
+                </div>
+                <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+                    Our Smoked Spanish Paprika is hand-harvested in the fertile valleys of Murcia. Slowly oak-smoked for
+                    15 days to develop its signature depth, this "Pimentón" offers a velvety texture and an intoxicating
+                    aroma that transforms any culinary creation into a masterpiece.
+                </p>
+                <!-- Flavor Profile Tags -->
+                <div class="mb-8">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Flavor Profile</h4>
+                    <div class="flex flex-wrap gap-3">
+                        <span
+                            class="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg text-sm font-bold">Smoky</span>
+                        <span
+                            class="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg text-sm font-bold">Sweet
+                            Dulce</span>
+                        <span
+                            class="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg text-sm font-bold">Earthy</span>
+                    </div>
+                </div>
+                <!-- Heat Level -->
+                <div class="mb-10">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400">Heat Level</h4>
+                        <span class="text-sm font-bold text-slate-900 dark:text-white">2/5 (Mild-Medium)</span>
+                    </div>
+                    <div class="flex gap-1.5">
+                        <div class="h-2 w-full bg-primary rounded-full"></div>
+                        <div class="h-2 w-full bg-primary rounded-full"></div>
+                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+                    </div>
+                </div>
+                <!-- Purchase Row -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                    <div
+                        class="flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 min-w-[140px]">
+                        <button class="hover:text-primary transition-colors flex items-center">
+                            <span class="material-symbols-outlined">remove</span>
+                        </button>
+                        <span class="text-lg font-bold">1</span>
+                        <button class="hover:text-primary transition-colors flex items-center">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
+                    <button
+                        class="flex-1 bg-primary hover:bg-primary/90 text-white font-bold py-4 px-8 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-3">
+                        <span class="material-symbols-outlined">shopping_bag</span>
+                        Add to Cart
+                    </button>
+                </div>
+                <!-- Tabs/Accordions -->
+                <div class="border-t border-slate-200 dark:border-slate-700">
+                    <!-- Origin Item -->
+                    <div class="py-5 border-b border-slate-200 dark:border-slate-700">
+                        <button class="flex items-center justify-between w-full group">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">location_on</span>
+                                <span class="text-lg font-bold">Origin: Murcia, Spain</span>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">expand_more</span>
+                        </button>
+                        <div class="mt-4 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            Sourced from a third-generation family estate. The peppers are dried using traditional
+                            methods over Holmoak fires, ensuring an authentic Pimentón de la Vera flavor profile.
+                        </div>
+                    </div>
+                    <!-- Pairing Suggestions Item -->
+                    <div class="py-5 border-b border-slate-200 dark:border-slate-700">
+                        <button class="flex items-center justify-between w-full group">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">restaurant_menu</span>
+                                <span class="text-lg font-bold">Pairing Suggestions</span>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">expand_more</span>
+                        </button>
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="flex items-center gap-2 bg-primary/5 p-3 rounded-lg">
+                                <span class="material-symbols-outlined text-xs">check_circle</span>
+                                <span class="text-sm font-medium">Roasted Potatoes</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-primary/5 p-3 rounded-lg">
+                                <span class="material-symbols-outlined text-xs">check_circle</span>
+                                <span class="text-sm font-medium">Grilled Octopus</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-primary/5 p-3 rounded-lg">
+                                <span class="material-symbols-outlined text-xs">check_circle</span>
+                                <span class="text-sm font-medium">Traditional Paella</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-primary/5 p-3 rounded-lg">
+                                <span class="material-symbols-outlined text-xs">check_circle</span>
+                                <span class="text-sm font-medium">Deviled Eggs</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Reviews Summary -->
+                    <div class="py-5">
+                        <button class="flex items-center justify-between w-full group">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">rate_review</span>
+                                <span class="text-lg font-bold">Customer Reviews (128)</span>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">expand_more</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Secondary Section: Visual Impact -->
+        <section class="mt-24 bg-primary/5 rounded-3xl p-12 overflow-hidden relative">
+            <div class="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-3xl font-black mb-6">The Smoking Process</h3>
+                    <p class="text-lg text-slate-600 dark:text-slate-400 mb-8">
+                        Unlike air-dried paprika, our Spanish varietal is smoked over embers of Holm Oak for several
+                        weeks. This painstaking artisanal process reduces moisture while infusing every grain with the
+                        soul of the wood fire.
+                    </p>
+                    <button
+                        class="px-8 py-3 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all">
+                        Learn about our methods
+                    </button>
+                </div>
+                <div class="relative">
+                    <img alt="Process Image" class="rounded-2xl shadow-2xl w-full h-80 object-cover"
+                        data-alt="Traditional wood fire smoking process for peppers in a rustic barn"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNjhblIQ7As5fhOSCFfYyoeURcCeMHe_S392ReK9FmPOHHFnmzI7yxWySNcQSVWYo4cwEo7ZlPmWxuR3Z0nryUidQNfzoyMZF4nq7FYmlEaCHXd4Nzy1WUMbZvJRDkjjkyG_ai11aBSBvilIRqfhmAWFTMPgPcUsKFHuEiZDcI5iqWuoQ4WMyKqveQmkhLaydfnFprrWa-TKKyH79lVNUiy3GcFZv6pPSVs_exINTyzB55whVcgpzWeS1To3aFxsThS9vjZ6AKLPMA" />
+                    <div
+                        class="absolute -bottom-6 -right-6 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl max-w-xs">
+                        <p class="italic text-slate-500 text-sm">"The aroma alone takes me back to my grandmother's
+                            kitchen in Spain. Authentic and deep."</p>
+                        <p class="mt-4 font-bold">— Chef Elena R.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Decorative element -->
+            <div
+                class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl">
+            </div>
+        </section>
+        <!-- Customer Reviews Panel -->
+        <section class="mt-24">
+            <div class="flex items-end justify-between mb-12">
+                <div>
+                    <h2 class="text-4xl font-black mb-2">What chefs are saying</h2>
+                    <p class="text-slate-500 font-medium tracking-wide uppercase text-sm">Real reviews from our culinary
+                        community</p>
+                </div>
+                <button class="flex items-center gap-2 text-primary font-bold hover:underline">
+                    Write a Review
+                    <span class="material-symbols-outlined text-sm">edit</span>
+                </button>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Review Card 1 -->
+                <div
+                    class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex text-primary mb-4">
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                    </div>
+                    <p class="font-bold text-lg mb-2">Incredible depth of flavor!</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                        "The smoke is perfectly balanced. I use it for everything from roasted chickpeas to my specialty
+                        dry rubs. Best I've found."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                            MK</div>
+                        <div>
+                            <p class="text-sm font-bold">Marcus K.</p>
+                            <p class="text-xs text-slate-400">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review Card 2 -->
+                <div
+                    class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex text-primary mb-4">
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                    </div>
+                    <p class="font-bold text-lg mb-2">True Spanish quality</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                        "If you're making paella, don't compromise. This is the real deal. The color it adds to the dish
+                        is absolutely stunning."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                            SL</div>
+                        <div>
+                            <p class="text-sm font-bold">Sofia L.</p>
+                            <p class="text-xs text-slate-400">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review Card 3 -->
+                <div
+                    class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex text-primary mb-4">
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                        <span class="material-symbols-outlined fill text-sm">star</span>
+                    </div>
+                    <p class="font-bold text-lg mb-2">Beautifully packaged</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                        "I bought this as a gift for a friend but ended up keeping it! The jar looks great on the
+                        counter and the spice is so fresh."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                            JT</div>
+                        <div>
+                            <p class="text-sm font-bold">James T.</p>
+                            <p class="text-xs text-slate-400">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="mt-24 bg-slate-900 text-slate-300 py-20">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10">
+            <div class="grid md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2 bg-primary rounded-lg text-white">
+                            <span class="material-symbols-outlined text-2xl">eco</span>
+                        </div>
+                        <h2 class="text-xl font-extrabold tracking-tight text-white uppercase">Artisan Spices</h2>
+                    </div>
+                    <p class="text-sm leading-relaxed">
+                        Bringing the world's finest, ethically sourced ingredients to your kitchen. From family-owned
+                        estates to your table.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-6">Shop</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a class="hover:text-primary transition-colors" href="#">All Spices</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Gift Sets</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Subscriptions</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Wholesale</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-6">Company</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a class="hover:text-primary transition-colors" href="#">Our Story</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Sustainability</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Journal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-6">Newsletter</h4>
+                    <p class="text-sm mb-4">Subscribe for culinary inspiration and early access.</p>
+                    <div class="flex gap-2">
+                        <input class="bg-slate-800 border-none rounded-lg px-4 py-2 text-sm focus:ring-primary flex-1"
+                            placeholder="Enter email" type="email" />
+                        <button class="bg-primary text-white p-2 rounded-lg">
+                            <span class="material-symbols-outlined">send</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+                <p>© 2024 Artisan Spices Ltd. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a class="hover:text-primary" href="#">Privacy Policy</a>
+                    <a class="hover:text-primary" href="#">Terms of Service</a>
+                    <a class="hover:text-primary" href="#">Shipping Info</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

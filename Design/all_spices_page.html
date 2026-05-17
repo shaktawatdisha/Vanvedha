@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Shop All Spices - Spice Haven</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec4913",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221510",
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .product-card:hover .quick-add-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+    <div
+        class="relative flex h-auto min-h-screen w-full flex-col bg-white dark:bg-background-dark group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <!-- Header / Nav -->
+            <header
+                class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-10 py-3 bg-white dark:bg-background-dark sticky top-0 z-50">
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-4 text-primary">
+                        <div class="size-6">
+                            <span class="material-symbols-outlined text-3xl">cooking</span>
+                        </div>
+                        <h2
+                            class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-[-0.015em]">
+                            Spice Haven</h2>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-9">
+                        <a class="text-primary text-sm font-bold leading-normal border-b-2 border-primary pb-1"
+                            href="#">Shop All</a>
+                        <a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium leading-normal"
+                            href="#">Recipes</a>
+                        <a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium leading-normal"
+                            href="#">Gifts</a>
+                        <a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium leading-normal"
+                            href="#">Our Story</a>
+                    </nav>
+                </div>
+                <div class="flex flex-1 justify-end gap-6 items-center">
+                    <label class="hidden lg:flex flex-col min-w-40 !h-10 max-w-64">
+                        <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                            <div
+                                class="text-slate-400 flex border-none bg-slate-100 dark:bg-slate-800 items-center justify-center pl-4 rounded-l-lg border-r-0">
+                                <span class="material-symbols-outlined text-xl">search</span>
+                            </div>
+                            <input
+                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-0 border-none bg-slate-100 dark:bg-slate-800 focus:border-none h-full placeholder:text-slate-400 px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal"
+                                placeholder="Search spices..." />
+                        </div>
+                    </label>
+                    <div class="flex gap-2">
+                        <button
+                            class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-primary/10 hover:text-primary transition-all">
+                            <span class="material-symbols-outlined">shopping_cart</span>
+                        </button>
+                        <button
+                            class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-primary/10 hover:text-primary transition-all">
+                            <span class="material-symbols-outlined">person</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <main class="flex-1 flex flex-col md:flex-row max-w-[1440px] mx-auto w-full px-4 lg:px-10 py-8 gap-10">
+                <!-- Left Sidebar Filters -->
+                <aside class="w-full md:w-64 flex flex-col gap-8 flex-shrink-0">
+                    <div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="material-symbols-outlined text-primary">filter_list</span>
+                            <h3 class="text-lg font-bold">Filters</h3>
+                        </div>
+                        <!-- Flavor Profile -->
+                        <div class="mb-6">
+                            <button class="flex items-center justify-between w-full py-2 group">
+                                <span class="font-semibold text-sm uppercase tracking-wider text-slate-500">Flavor
+                                    Profile</span>
+                                <span class="material-symbols-outlined text-sm">expand_more</span>
+                            </button>
+                            <div class="flex flex-col gap-2 mt-2">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input checked=""
+                                        class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                        type="checkbox" />
+                                    <span
+                                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Smoky</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                        type="checkbox" />
+                                    <span
+                                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Spicy</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                        type="checkbox" />
+                                    <span
+                                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Sweet</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                        type="checkbox" />
+                                    <span
+                                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Earthy</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                        type="checkbox" />
+                                    <span
+                                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Citrus</span>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Cuisine -->
+                        <div class="mb-6">
+                            <button class="flex items-center justify-between w-full py-2 group">
+                                <span
+                                    class="font-semibold text-sm uppercase tracking-wider text-slate-500">Cuisine</span>
+                                <span class="material-symbols-outlined text-sm">expand_more</span>
+                            </button>
+                            <div class="flex flex-col gap-2 mt-2">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                        type="checkbox" />
+                                    <span
+                                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Mediterranean</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                        type="checkbox" />
+                                    <span
+                                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Asian</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                        type="checkbox" />
+                                    <span
+                                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Mexican</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                        type="checkbox" />
+                                    <span
+                                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Middle
+                                        Eastern</span>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Heat Level -->
+                        <div class="mb-6">
+                            <button class="flex items-center justify-between w-full py-2 group">
+                                <span class="font-semibold text-sm uppercase tracking-wider text-slate-500">Heat
+                                    Level</span>
+                                <span class="material-symbols-outlined text-sm">expand_more</span>
+                            </button>
+                            <div class="mt-4 px-1">
+                                <input
+                                    class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                                    max="100" min="0" type="range" />
+                                <div class="flex justify-between text-[10px] font-bold text-slate-400 mt-2">
+                                    <span>MILD</span>
+                                    <span>EXTRA HOT</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                <!-- Main Content Area -->
+                <section class="flex-1">
+                    <!-- Top Breadcrumb & Toolbar -->
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                        <div>
+                            <nav class="flex text-xs font-medium text-slate-400 gap-2 mb-2">
+                                <a class="hover:text-primary" href="#">Home</a>
+                                <span>/</span>
+                                <span class="text-slate-900 dark:text-slate-100">Shop All Spices</span>
+                            </nav>
+                            <h1 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100">Our Collection <span
+                                    class="text-slate-400 text-lg font-normal ml-2">(48 Products)</span></h1>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Sort By</span>
+                            <select
+                                class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-2 pl-4 pr-10 text-sm focus:ring-primary focus:border-primary outline-none">
+                                <option>Popularity</option>
+                                <option>Newest</option>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Product Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Product Item 1 -->
+                        <div
+                            class="product-card group relative bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-transparent hover:border-primary/20 hover:shadow-xl transition-all duration-300">
+                            <div class="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-900">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    data-alt="Glass jar of smoked Spanish paprika on a rustic background"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-AvHo0y8GXzogn7I7FnvjpLipkCXbt9ZLLBXXnKuD2gJIdy6A_Mprnv7sGK2w64tjW6jbUMibfO7tZAY-OW3YgH1_YleLP167ecRPoaomJ6llIowShznhm-V2BeOG8qJ1WrIl3V-uqIKalnMPZe0swWS_2D1DiGhpSUEjx7keAPc0D3MHTilLw40PgGf2mYnkVU7NBxN9I-Jj3SPBLP5e1HwCBFo5gUjgaUqtym6F1etrEvXjb6gVS0Q5feO5KYXEsAgvaRW3kMxs" />
+                                <div
+                                    class="quick-add-btn opacity-0 translate-y-4 absolute bottom-4 left-4 right-4 transition-all duration-300 flex justify-center">
+                                    <button
+                                        class="bg-primary text-white py-2.5 px-6 rounded-lg font-bold text-sm shadow-lg hover:bg-primary/90 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                        Quick Add
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="text-[10px] text-slate-400 font-bold ml-1">(124)</span>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-0.5">Smoked Spanish
+                                    Paprika</h4>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs font-medium mb-3">2.5 oz jar •
+                                    Sweet &amp; Smoky</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary">$12.50</span>
+                                    <span
+                                        class="text-[10px] py-1 px-2 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 font-bold">BEST
+                                        SELLER</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product Item 2 -->
+                        <div
+                            class="product-card group relative bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-transparent hover:border-primary/20 hover:shadow-xl transition-all duration-300">
+                            <div class="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-900">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    data-alt="Various colored peppercorns in wooden bowls"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaOpdB1rwGg-Q0DydoeyP713dtouDlCuAGksNngxC3qS-CDHBnPQpxNyVUoJsiwo3LMkOG-S12KlamNe7c3OpG9dkbDL6-Kdo8LE3vssrs8f3FJulR0O9OkvPt_9vMtWafq6wy4dTtBtbAOlSobOYIwY9U1IgLeADn0wKp_j6fOO1BlJEHELxG9NFb8uBgg4KcGpOk-_8ifXlPf713ORpphO6L6J6C1suvPyAxp4L0T0UuPHieMPnM13_4SlHZI2SPewYyI0lZz9x2" />
+                                <div
+                                    class="quick-add-btn opacity-0 translate-y-4 absolute bottom-4 left-4 right-4 transition-all duration-300 flex justify-center">
+                                    <button
+                                        class="bg-primary text-white py-2.5 px-6 rounded-lg font-bold text-sm shadow-lg hover:bg-primary/90 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                        Quick Add
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs">star</span>
+                                    <span class="text-[10px] text-slate-400 font-bold ml-1">(89)</span>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-0.5">Tellicherry
+                                    Peppercorns</h4>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs font-medium mb-3">3.0 oz jar • Bold
+                                    &amp; Spicy</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary">$14.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product Item 3 -->
+                        <div
+                            class="product-card group relative bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-transparent hover:border-primary/20 hover:shadow-xl transition-all duration-300">
+                            <div class="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-900">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    data-alt="Traditional Za'atar spice blend with sesame seeds and thyme"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIkQSc89WIJO_9VLZz1jp78xpL4Fj3TWiMAhGsiuCjPtMoVLcob1CkO9lDnI2tV547Qc3IBaOFHDedIdk9Q7XcM7vmoOIQj7zFcBIdbL1ngyToVhUf_zmcPlXvmV7rBXS0yBb81X2FvtecUizWY9dYQJdz1GszIhSJZHVtpR-1EC-2BNtgbImSk_xhuMlVSbH9IASPGUaNP9HCX0KkNxTCKqIdF32l5vVkYbJB2gaK_0P54PbsAy19h-K6oloxNdqrEQSQ2Co-7mZi" />
+                                <div
+                                    class="quick-add-btn opacity-0 translate-y-4 absolute bottom-4 left-4 right-4 transition-all duration-300 flex justify-center">
+                                    <button
+                                        class="bg-primary text-white py-2.5 px-6 rounded-lg font-bold text-sm shadow-lg hover:bg-primary/90 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                        Quick Add
+                                    </button>
+                                </div>
+                                <div
+                                    class="absolute top-4 right-4 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded">
+                                    NEW</div>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="text-[10px] text-slate-400 font-bold ml-1">(42)</span>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-0.5">Za'atar Blend
+                                </h4>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs font-medium mb-3">2.8 oz jar •
+                                    Earthy &amp; Nutty</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary">$11.50</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product Item 4 -->
+                        <div
+                            class="product-card group relative bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-transparent hover:border-primary/20 hover:shadow-xl transition-all duration-300">
+                            <div class="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-900">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    data-alt="Bright yellow turmeric powder on a spoon"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl_5a7cww1t5oZnct4ewXygahuRSBDzxDmhwJ3SvRTkFadM6AkGLZYpq5IdRvYrSid-aOoLVNq3tvDiwbeuziVuux5960-Eqlbja_5eX5vc-IioAIuEZOsJfNg7XnRIlVkq79cwStdBBUVSDm_8FytS9w87sdYYgJieKItIFA8bGI-F4JOdyKJgEEZg0Lf0M83GZiGqC5nQuOB66t6U2bN1MYMfc0dcgvWgnjaB5qKKV2OY2xhpnDuvD2XShb1K-sceDV-66BxYNlL" />
+                                <div
+                                    class="quick-add-btn opacity-0 translate-y-4 absolute bottom-4 left-4 right-4 transition-all duration-300 flex justify-center">
+                                    <button
+                                        class="bg-primary text-white py-2.5 px-6 rounded-lg font-bold text-sm shadow-lg hover:bg-primary/90 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                        Quick Add
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="text-[10px] text-slate-400 font-bold ml-1">(210)</span>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-0.5">Pure Ground
+                                    Turmeric</h4>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs font-medium mb-3">2.4 oz jar •
+                                    Earthy &amp; Bitter</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary">$9.50</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product Item 5 -->
+                        <div
+                            class="product-card group relative bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-transparent hover:border-primary/20 hover:shadow-xl transition-all duration-300">
+                            <div class="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-900">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    data-alt="Close up of green cardamom pods"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5XSNWQVhKYm4n2vwY01_nOQFVmVDNHjRBBt3jHtpprgLTYnyB-yVd9imK8BuUh9z8wICYkoPjCphGOI4GXeqqFHVfbMGz_bnXIIDK3OPX5XQipnZfhXYvUg6JyY42Zt6aTUBiWVey4fbFeIkBiy3CCFFZqr9_TtOH8e0zCDwLDq74lDuIA4GMCrQzogih2ALPIWD4PyREIGRb9rIxYx_Pl3lWU0SGrD9YS2cEbiOlrxI3G0CazTKTsO8S7dO8ve-FdsIqLef7zntg" />
+                                <div
+                                    class="quick-add-btn opacity-0 translate-y-4 absolute bottom-4 left-4 right-4 transition-all duration-300 flex justify-center">
+                                    <button
+                                        class="bg-primary text-white py-2.5 px-6 rounded-lg font-bold text-sm shadow-lg hover:bg-primary/90 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                        Quick Add
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs">star</span>
+                                    <span class="text-[10px] text-slate-400 font-bold ml-1">(56)</span>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-0.5">Green Cardamom
+                                    Pods</h4>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs font-medium mb-3">1.5 oz jar •
+                                    Sweet &amp; Floral</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary">$18.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product Item 6 -->
+                        <div
+                            class="product-card group relative bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-transparent hover:border-primary/20 hover:shadow-xl transition-all duration-300">
+                            <div class="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-900">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    data-alt="Red dried chili flakes in a glass bowl"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC2kxgUXpIRy3WE9NAX5fBk1YPmusUEN8WZG-09437W5wB3hzQBLoTY9P0_l3h5eERcinG6dpvYL-zwtZysKwhA0itIKyJFYE8zDljfA-yy3huS7pXjoLXFqmpBW-RMzpNWORBuhb6xjQBJYL2RF40TsVdRm09wHFeZ9ewIJO_wohTCuC_S802T9EOa2JfKFJg240t1xrA9SsR3h8aXoj3ZG50rHSTQl2gUtn2v-8pbYrhKhQsuWchQdYxmyNDNOInHyVNBqM24xl8" />
+                                <div
+                                    class="quick-add-btn opacity-0 translate-y-4 absolute bottom-4 left-4 right-4 transition-all duration-300 flex justify-center">
+                                    <button
+                                        class="bg-primary text-white py-2.5 px-6 rounded-lg font-bold text-sm shadow-lg hover:bg-primary/90 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                        Quick Add
+                                    </button>
+                                </div>
+                                <div
+                                    class="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded">
+                                    HOT</div>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="material-symbols-outlined text-primary text-xs fill-1">star</span>
+                                    <span class="text-[10px] text-slate-400 font-bold ml-1">(178)</span>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-0.5">Crushed Red
+                                    Pepper</h4>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs font-medium mb-3">2.0 oz jar •
+                                    Fiery &amp; Sharp</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary">$8.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-center gap-2 mt-16 mb-8">
+                        <button
+                            class="flex items-center justify-center w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary transition-all">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+                        <button class="w-10 h-10 rounded-lg bg-primary text-white font-bold text-sm">1</button>
+                        <button
+                            class="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary font-bold text-sm transition-all">2</button>
+                        <button
+                            class="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary font-bold text-sm transition-all">3</button>
+                        <button
+                            class="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary transition-all">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
+                </section>
+            </main>
+            <!-- Footer Small -->
+            <footer
+                class="mt-auto border-t border-slate-200 dark:border-slate-800 py-10 px-10 bg-slate-50 dark:bg-slate-900/50">
+                <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="flex items-center gap-2 text-primary">
+                        <span class="material-symbols-outlined">cooking</span>
+                        <span class="font-bold">Spice Haven</span>
+                    </div>
+                    <div class="flex gap-8 text-sm text-slate-500 dark:text-slate-400 font-medium">
+                        <a class="hover:text-primary" href="#">Shipping</a>
+                        <a class="hover:text-primary" href="#">Returns</a>
+                        <a class="hover:text-primary" href="#">Sustainability</a>
+                        <a class="hover:text-primary" href="#">Contact</a>
+                    </div>
+                    <div class="flex gap-4">
+                        <span
+                            class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors">brand_awareness</span>
+                        <span
+                            class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors">public</span>
+                        <span
+                            class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors">chat_bubble</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>
