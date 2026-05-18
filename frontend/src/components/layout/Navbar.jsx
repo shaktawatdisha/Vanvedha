@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { useCartStore } from '../../store/cartStore';
@@ -6,14 +6,20 @@ import { authApi } from '../../api/auth';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore();
-  const itemCount = useCartStore((s) => s.itemCount());
+  const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
+  const { fetchCart, clearLocal } = useCartStore();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    fetchCart();
+  }, [isAuthenticated]);
 
   const handleLogout = async () => {
     const refresh = localStorage.getItem('refresh_token');
     try { await authApi.logout(refresh); } catch { /* ignore */ }
     logout();
+    clearLocal();
     navigate('/login');
   };
 
@@ -22,8 +28,21 @@ export default function Navbar() {
 
       {/* Logo */}
       <Link to="/" className="flex items-center gap-3 no-underline">
-        <div className="size-9 flex items-center justify-center bg-[#ec4913]/10 rounded-xl">
-          <span className="material-symbols-outlined text-[#ec4913] text-2xl">skillet</span>
+        <div className="size-9 flex items-center justify-center bg-[#1a3d2a] rounded-xl border border-[#c9a84c]/30">
+          <svg viewBox="0 0 32 32" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Flame */}
+            <path d="M16 4C16 4 10 10 10 17c0 3.314 2.686 6 6 6s6-2.686 6-6c0-2-1-4-2-5 0 0 0 3-2 4 0-3-2-6-2-12z" fill="#e8742a"/>
+            <path d="M16 4C16 4 10 10 10 17c0 3.314 2.686 6 6 6s6-2.686 6-6c0-2-1-4-2-5 0 0 0 3-2 4 0-3-2-6-2-12z" fill="url(#flameGrad)"/>
+            {/* Leaf */}
+            <path d="M20 20c0 0-6 1-8-5 0 0 5-1 8 5z" fill="#2d8a4e"/>
+            <path d="M20 20c0 0-6 1-8-5 0 0 5-1 8 5z" fill="#3dab62" opacity="0.7"/>
+            <defs>
+              <linearGradient id="flameGrad" x1="16" y1="4" x2="16" y2="23" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#f5c842"/>
+                <stop offset="100%" stopColor="#e8742a"/>
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
         <span className="text-slate-900 text-xl font-black tracking-tight">Vanvedha</span>
       </Link>
@@ -62,9 +81,9 @@ export default function Navbar() {
         {/* Cart */}
         <Link to="/cart" className="relative flex items-center justify-center size-9 rounded-lg hover:bg-[#ec4913]/10 transition-colors no-underline text-slate-700 hover:text-[#ec4913]">
           <span className="material-symbols-outlined text-[22px]">shopping_bag</span>
-          {itemCount > 0 && (
+          {cartCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-[#ec4913] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-              {itemCount}
+              {cartCount}
             </span>
           )}
         </Link>

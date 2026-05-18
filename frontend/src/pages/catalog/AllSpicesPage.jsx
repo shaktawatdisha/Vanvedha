@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { catalogApi } from '../../api/catalog';
+import { useCartStore } from '../../store/cartStore';
 
 const SORT_OPTIONS = [
   { label: 'Newest',             value: '-created_at'    },
@@ -62,6 +64,7 @@ function ProductSkeleton() {
 }
 
 export default function AllSpicesPage() {
+  const { addItem } = useCartStore();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Filter state — initialised from URL params
@@ -337,15 +340,26 @@ export default function AllSpicesPage() {
                           <span className="material-symbols-outlined text-6xl text-slate-200">herbs</span>
                         </div>
                       )}
-                      <div className="opacity-0 translate-y-4 absolute bottom-4 left-4 right-4 transition-all duration-300 flex justify-center group-hover:opacity-100 group-hover:translate-y-0">
-                        <button
-                          onClick={(e) => e.preventDefault()}
-                          className="bg-[#ec4913] text-white py-2.5 px-6 rounded-lg font-bold text-sm shadow-lg hover:bg-[#ec4913]/90 flex items-center gap-2 cursor-pointer border-0"
-                        >
-                          <span className="material-symbols-outlined text-lg">add_shopping_cart</span>
-                          Quick Add
-                        </button>
-                      </div>
+                      {variant?.is_in_stock && (
+                        <div className="opacity-0 translate-y-4 absolute bottom-4 left-4 right-4 transition-all duration-300 flex justify-center group-hover:opacity-100 group-hover:translate-y-0">
+                          <button
+                            onClick={async (e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              try {
+                                await addItem(variant.id, 1);
+                                toast.success(`${p.name} added to cart`);
+                              } catch {
+                                toast.error('Failed to add to cart. Please log in first.');
+                              }
+                            }}
+                            className="bg-[#ec4913] text-white py-2.5 px-6 rounded-lg font-bold text-sm shadow-lg hover:bg-[#ec4913]/90 flex items-center gap-2 cursor-pointer border-0"
+                          >
+                            <span className="material-symbols-outlined text-lg">add_shopping_cart</span>
+                            Quick Add
+                          </button>
+                        </div>
+                      )}
                       {p.is_organic && (
                         <span className="absolute top-3 left-3 rounded-full bg-green-500 px-2 py-0.5 text-[10px] font-bold text-white">Organic</span>
                       )}

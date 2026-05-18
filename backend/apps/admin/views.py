@@ -7,8 +7,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 
-from apps.accounts.models import User, VendorProfile, DeliveryAgentProfile, Role
-from apps.accounts.serializers import UserSerializer
+from apps.accounts.models import User, VendorProfile, DeliveryAgentProfile, Address, Role
+from apps.accounts.serializers import UserSerializer, AddressSerializer
 from apps.orders.models import Order, OrderItem
 from apps.catalog.models import Product, ProductVariant, ProductImage, Category, Tag
 from apps.coupons.models import Coupon
@@ -165,6 +165,16 @@ class AdminChangeRoleView(APIView):
         user.is_staff = new_role == Role.ADMIN
         user.save(update_fields=['role', 'is_staff'])
         return Response({'detail': f'Role updated to {new_role} for {user.email}.'})
+
+
+class AdminUserAddressesView(generics.ListAPIView):
+    permission_classes = [IsAdminRole]
+    serializer_class = AddressSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        user = get_object_or_404(User, id=self.kwargs['id'])
+        return Address.objects.filter(user=user).order_by('-is_default', '-created_at')
 
 
 # ── Vendor Management ─────────────────────────────────────────────────────────

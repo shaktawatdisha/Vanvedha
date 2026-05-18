@@ -17,9 +17,87 @@ const inputCls = 'border border-stone-200 rounded-xl px-4 py-2 text-sm focus:out
 const thCls    = 'px-5 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider';
 const tdCls    = 'px-5 py-3 text-sm text-stone-700 align-middle';
 
+const labelColors = {
+  HOME:  'bg-sky-100 text-sky-700',
+  WORK:  'bg-violet-100 text-violet-700',
+  OTHER: 'bg-stone-100 text-stone-600',
+};
+
+function AddressesModal({ user, onClose }) {
+  const { data: addresses, isLoading } = useQuery({
+    queryKey: ['admin-user-addresses', user.id],
+    queryFn: () => adminApi.getUserAddresses(user.id).then((r) => r.data),
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100">
+          <div>
+            <h2 className="font-black text-stone-900 text-lg">Saved Addresses</h2>
+            <p className="text-xs text-stone-400 mt-0.5">{user.full_name} · {user.email}</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="size-8 flex items-center justify-center rounded-xl text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer border-0 bg-transparent"
+          >
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="overflow-y-auto flex-1 px-6 py-4 flex flex-col gap-3">
+          {isLoading && (
+            <div className="flex items-center justify-center py-12 text-stone-400">
+              <span className="material-symbols-outlined animate-spin text-3xl">progress_activity</span>
+            </div>
+          )}
+
+          {!isLoading && (!addresses || addresses.length === 0) && (
+            <div className="flex flex-col items-center py-12 text-stone-400 gap-2">
+              <span className="material-symbols-outlined text-4xl">location_off</span>
+              <p className="text-sm font-medium">No saved addresses</p>
+            </div>
+          )}
+
+          {addresses?.map((addr) => (
+            <div
+              key={addr.id}
+              className={`rounded-xl border p-4 ${addr.is_default ? 'border-[#ec4913]/30 bg-[#ec4913]/3' : 'border-stone-200'}`}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded-full ${labelColors[addr.label] || 'bg-stone-100 text-stone-600'}`}>
+                  {addr.label}
+                </span>
+                {addr.is_default && (
+                  <span className="text-xs font-semibold text-green-600 flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                    Default
+                  </span>
+                )}
+              </div>
+              <div className="text-sm text-stone-700 leading-relaxed">
+                <p className="font-semibold text-stone-900">{addr.full_name}</p>
+                <p>{addr.address_line1}{addr.address_line2 ? `, ${addr.address_line2}` : ''}</p>
+                <p>{addr.city}, {addr.state} – {addr.pincode}</p>
+                <p className="text-stone-400 text-xs mt-1">{addr.phone} · {addr.country}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminUsers() {
   const qc = useQueryClient();
   const [filters, setFilters] = useState({ role: '', is_active: '', search: '' });
+  const [addressesUser, setAddressesUser] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-users', filters],
@@ -116,14 +194,14 @@ export default function AdminUsers() {
                         {u.is_active ? (
                           <button
                             onClick={() => deactivateMut.mutate(u.id)}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-red-100 text-red-700 hover:bg-red-200 transition-colors cursor-pointer border-0"
                           >
                             Deactivate
                           </button>
                         ) : (
                           <button
                             onClick={() => activateMut.mutate(u.id)}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors"
+                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors cursor-pointer border-0"
                           >
                             Activate
                           </button>
@@ -131,11 +209,19 @@ export default function AdminUsers() {
                         {!u.is_verified && (
                           <button
                             onClick={() => verifyMut.mutate(u.id)}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors"
+                            className="px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors cursor-pointer border-0"
                           >
                             Verify
                           </button>
                         )}
+                        <button
+                          onClick={() => setAddressesUser(u)}
+                          title="View addresses"
+                          className="px-3 py-1 rounded-lg text-xs font-semibold bg-amber-100 text-amber-700 hover:bg-amber-200 transition-colors cursor-pointer border-0 flex items-center gap-1"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">location_on</span>
+                          Addresses
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -150,6 +236,10 @@ export default function AdminUsers() {
           </div>
         )}
       </div>
+
+      {addressesUser && (
+        <AddressesModal user={addressesUser} onClose={() => setAddressesUser(null)} />
+      )}
     </div>
   );
 }

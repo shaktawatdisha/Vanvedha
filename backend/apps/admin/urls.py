@@ -4,7 +4,7 @@ from .views import (
     AdminDashboardView,
     AdminUserListView, AdminUserDetailView,
     AdminUserActivateView, AdminUserDeactivateView,
-    AdminUserVerifyView, AdminChangeRoleView,
+    AdminUserVerifyView, AdminChangeRoleView, AdminUserAddressesView,
     AdminVendorListView, AdminVendorDetailView,
     AdminVendorApproveView, AdminVendorRejectView,
     AdminDeliveryAgentListView, AdminDeliveryAgentDetailView,
@@ -34,6 +34,7 @@ urlpatterns = [
     path('users/<uuid:id>/deactivate/',                    AdminUserDeactivateView.as_view(),               name='admin-user-deactivate'),
     path('users/<uuid:id>/verify/',                        AdminUserVerifyView.as_view(),                   name='admin-user-verify'),
     path('users/<uuid:id>/change-role/',                   AdminChangeRoleView.as_view(),                   name='admin-change-role'),
+    path('users/<uuid:id>/addresses/',                     AdminUserAddressesView.as_view(),                name='admin-user-addresses'),
 
     # Vendor management
     path('vendors/',                                       AdminVendorListView.as_view(),                   name='admin-vendor-list'),

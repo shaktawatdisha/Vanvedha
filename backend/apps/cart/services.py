@@ -9,7 +9,6 @@ Cart value (Redis hash):
   items -> JSON string: {variant_id: quantity, ...}
   coupon_code -> string
 """
-import json
 from django.core.cache import cache
 from django.conf import settings
 from apps.catalog.models import ProductVariant
@@ -49,6 +48,7 @@ def get_cart(request):
         str(v.id): v
         for v in ProductVariant.objects.filter(id__in=variant_ids)
         .select_related('product')
+        .prefetch_related('product__images')
     }
     items = []
     subtotal = 0
@@ -58,6 +58,11 @@ def get_cart(request):
             continue
         line_total = variant.price * qty
         subtotal += line_total
+        primary_image = (
+            variant.product.images.filter(is_primary=True).first()
+            or variant.product.images.first()
+        )
+        image_url = request.build_absolute_uri(primary_image.image.url) if primary_image else None
         items.append({
             'variant_id': vid,
             'product_name': variant.product.name,
@@ -67,6 +72,7 @@ def get_cart(request):
             'quantity': qty,
             'line_total': float(line_total),
             'stock': variant.stock,
+            'image_url': image_url,
         })
 
     shipping = 0 if subtotal >= settings.FREE_SHIPPING_THRESHOLD else settings.SHIPPING_CHARGE

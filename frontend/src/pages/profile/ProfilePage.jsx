@@ -6,6 +6,22 @@ import { authApi } from '../../api/auth';
 import { ordersApi } from '../../api/orders';
 import { catalogApi } from '../../api/catalog';
 
+const INDIAN_STATES = [
+  'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat',
+  'Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh',
+  'Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab',
+  'Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh',
+  'Uttarakhand','West Bengal','Andaman and Nicobar Islands','Chandigarh','Delhi',
+  'Jammu and Kashmir','Ladakh','Lakshadweep','Puducherry',
+];
+
+const EMPTY_ADDRESS = {
+  label: 'HOME', full_name: '', phone: '', address_line1: '', address_line2: '',
+  city: '', state: '', pincode: '', country: 'India', is_default: false,
+};
+
+const fieldCls = 'rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-[#ec4913] focus:ring-1 focus:ring-[#ec4913] w-full';
+
 const NAV_LINKS = [
   { icon: 'dashboard',   label: 'Overview',         tab: 'overview'         },
   { icon: 'history',     label: 'Order History',    tab: 'order-history'    },
@@ -214,9 +230,166 @@ function OrderHistoryTab({ orders, loading }) {
   );
 }
 
+/* ─── Address Form Modal ─── */
+function AddressFormModal({ initial, onClose, onSaved }) {
+  const isEdit = !!initial?.id;
+  const [form, setForm] = useState(
+    isEdit
+      ? { label: initial.label, full_name: initial.full_name, phone: initial.phone,
+          address_line1: initial.address_line1, address_line2: initial.address_line2 || '',
+          city: initial.city, state: initial.state, pincode: initial.pincode,
+          country: initial.country, is_default: initial.is_default }
+      : { ...EMPTY_ADDRESS }
+  );
+  const [saving, setSaving] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((f) => ({ ...f, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const required = ['full_name', 'phone', 'address_line1', 'city', 'state', 'pincode'];
+    if (required.some((k) => !form[k]?.trim())) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+    setSaving(true);
+    try {
+      if (isEdit) {
+        await authApi.updateAddress(initial.id, form);
+        toast.success('Address updated');
+      } else {
+        await authApi.createAddress(form);
+        toast.success('Address saved');
+      }
+      onSaved();
+      onClose();
+    } catch {
+      toast.error(isEdit ? 'Failed to update address' : 'Failed to save address');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+          <h2 className="font-black text-slate-900 text-lg">
+            {isEdit ? 'Edit Address' : 'Add New Address'}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="size-8 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer border-0 bg-transparent"
+          >
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 px-6 py-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Address Type <span className="text-red-500">*</span></label>
+              <select name="label" value={form.label} onChange={handleChange} className={fieldCls}>
+                <option value="HOME">Home</option>
+                <option value="WORK">Work</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            <div className="hidden sm:block" />
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Full Name <span className="text-red-500">*</span></label>
+              <input name="full_name" value={form.full_name} onChange={handleChange} placeholder="John Doe" className={fieldCls} />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Phone <span className="text-red-500">*</span></label>
+              <input name="phone" value={form.phone} onChange={handleChange} placeholder="9876543210" type="tel" className={fieldCls} />
+            </div>
+
+            <div className="sm:col-span-2 flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Address Line 1 <span className="text-red-500">*</span></label>
+              <input name="address_line1" value={form.address_line1} onChange={handleChange} placeholder="House/Flat no., Street, Area" className={fieldCls} />
+            </div>
+            <div className="sm:col-span-2 flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Address Line 2</label>
+              <input name="address_line2" value={form.address_line2} onChange={handleChange} placeholder="Landmark (optional)" className={fieldCls} />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">City <span className="text-red-500">*</span></label>
+              <input name="city" value={form.city} onChange={handleChange} placeholder="Mumbai" className={fieldCls} />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">State <span className="text-red-500">*</span></label>
+              <select name="state" value={form.state} onChange={handleChange} className={fieldCls}>
+                <option value="">Select state</option>
+                {INDIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pincode <span className="text-red-500">*</span></label>
+              <input name="pincode" value={form.pincode} onChange={handleChange} placeholder="400001" maxLength={6} className={fieldCls} />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Country</label>
+              <input name="country" value={form.country} onChange={handleChange} placeholder="India" className={fieldCls} />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  name="is_default"
+                  checked={form.is_default}
+                  onChange={handleChange}
+                  className="w-4 h-4 rounded accent-[#ec4913] cursor-pointer"
+                />
+                <span className="text-sm text-slate-600">Set as default address</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="flex gap-3 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 rounded-xl border border-slate-200 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer bg-transparent"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex-1 rounded-xl bg-[#ec4913] py-3 text-sm font-bold text-white hover:bg-[#ec4913]/90 transition-colors disabled:opacity-60 cursor-pointer border-0"
+            >
+              {saving ? 'Saving…' : isEdit ? 'Update Address' : 'Save Address'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Addresses Tab ─── */
 function AddressesTab({ addresses, loading, onRefresh }) {
-  const [deleting, setDeleting] = useState(null);
+  const [deleting, setDeleting]   = useState(null);
+  const [modalAddr, setModalAddr] = useState(null);
+  const [showAdd, setShowAdd]     = useState(false);
 
   const handleDelete = async (id) => {
     setDeleting(id);
@@ -251,48 +424,88 @@ function AddressesTab({ addresses, loading, onRefresh }) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {!addresses.length && (
-        <div className="flex flex-col items-center py-20 text-slate-400 gap-3">
-          <span className="material-symbols-outlined text-5xl">location_off</span>
-          <p className="font-semibold">No saved addresses</p>
-        </div>
-      )}
-      {addresses.map((addr) => (
-        <div key={addr.id} className={`rounded-2xl bg-white p-5 border shadow-sm ${addr.is_default ? 'border-[#ec4913]/40' : 'border-[#ec4913]/5'}`}>
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider rounded-full px-2 py-0.5 bg-[#ec4913]/10 text-[#ec4913]">{addr.label}</span>
-              {addr.is_default && <span className="text-xs font-bold text-green-600">Default</span>}
-            </div>
-            <div className="flex gap-2">
-              {!addr.is_default && (
+    <>
+      <div className="flex flex-col gap-4">
+        {/* Add address button */}
+        <button
+          onClick={() => setShowAdd(true)}
+          className="flex items-center gap-2 self-start rounded-xl bg-[#ec4913] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#ec4913]/90 transition-colors cursor-pointer border-0"
+        >
+          <span className="material-symbols-outlined text-[18px]">add_location_alt</span>
+          Add New Address
+        </button>
+
+        {!addresses.length && (
+          <div className="flex flex-col items-center py-16 text-slate-400 gap-3">
+            <span className="material-symbols-outlined text-5xl">location_off</span>
+            <p className="font-semibold">No saved addresses</p>
+            <p className="text-sm">Add an address to speed up checkout.</p>
+          </div>
+        )}
+
+        {addresses.map((addr) => (
+          <div
+            key={addr.id}
+            className={`rounded-2xl bg-white p-5 border shadow-sm ${addr.is_default ? 'border-[#ec4913]/40' : 'border-[#ec4913]/5'}`}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-bold uppercase tracking-wider rounded-full px-2 py-0.5 bg-[#ec4913]/10 text-[#ec4913]">
+                  {addr.label}
+                </span>
+                {addr.is_default && <span className="text-xs font-bold text-green-600">Default</span>}
+              </div>
+              <div className="flex items-center gap-3 flex-shrink-0">
+                {!addr.is_default && (
+                  <button
+                    onClick={() => handleSetDefault(addr.id)}
+                    className="text-xs text-slate-400 hover:text-[#ec4913] cursor-pointer border-0 bg-transparent transition-colors"
+                  >
+                    Set default
+                  </button>
+                )}
                 <button
-                  onClick={() => handleSetDefault(addr.id)}
-                  className="text-xs text-slate-400 hover:text-[#ec4913] cursor-pointer border-0 bg-transparent"
+                  onClick={() => setModalAddr(addr)}
+                  className="text-xs text-slate-400 hover:text-[#ec4913] cursor-pointer border-0 bg-transparent transition-colors flex items-center gap-1"
                 >
-                  Set default
+                  <span className="material-symbols-outlined text-[14px]">edit</span>
+                  Edit
                 </button>
-              )}
-              <button
-                onClick={() => handleDelete(addr.id)}
-                disabled={deleting === addr.id}
-                className="text-xs text-slate-400 hover:text-red-500 cursor-pointer border-0 bg-transparent disabled:opacity-50"
-              >
-                {deleting === addr.id ? '…' : 'Remove'}
-              </button>
+                <button
+                  onClick={() => handleDelete(addr.id)}
+                  disabled={deleting === addr.id}
+                  className="text-xs text-slate-400 hover:text-red-500 cursor-pointer border-0 bg-transparent disabled:opacity-50 transition-colors"
+                >
+                  {deleting === addr.id ? '…' : 'Remove'}
+                </button>
+              </div>
+            </div>
+            <div className="mt-3 text-sm text-slate-700 leading-relaxed">
+              <p className="font-semibold text-slate-900">{addr.full_name}</p>
+              <p>{addr.address_line1}{addr.address_line2 ? `, ${addr.address_line2}` : ''}</p>
+              <p>{addr.city}, {addr.state} – {addr.pincode}</p>
+              <p>{addr.country}</p>
+              <p className="text-slate-400 mt-1">{addr.phone}</p>
             </div>
           </div>
-          <div className="mt-2 text-sm text-slate-700 leading-relaxed">
-            <p className="font-semibold">{addr.full_name}</p>
-            <p>{addr.address_line1}{addr.address_line2 ? `, ${addr.address_line2}` : ''}</p>
-            <p>{addr.city}, {addr.state} – {addr.pincode}</p>
-            <p>{addr.country}</p>
-            <p className="text-slate-400 mt-1">{addr.phone}</p>
-          </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+
+      {showAdd && (
+        <AddressFormModal
+          initial={null}
+          onClose={() => setShowAdd(false)}
+          onSaved={onRefresh}
+        />
+      )}
+      {modalAddr && (
+        <AddressFormModal
+          initial={modalAddr}
+          onClose={() => setModalAddr(null)}
+          onSaved={onRefresh}
+        />
+      )}
+    </>
   );
 }
 

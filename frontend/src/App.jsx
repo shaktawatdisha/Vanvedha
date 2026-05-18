@@ -11,6 +11,9 @@ import LandingPage       from './pages/LandingPage';
 import AllSpicesPage     from './pages/catalog/AllSpicesPage';
 import ProductDetailPage from './pages/catalog/ProductDetailPage';
 import ProfilePage       from './pages/profile/ProfilePage';
+import CartPage                from './pages/cart/CartPage';
+import CheckoutPage           from './pages/checkout/CheckoutPage';
+import OrderConfirmationPage  from './pages/checkout/OrderConfirmationPage';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000 } },
@@ -38,8 +41,10 @@ export default function App() {
             <Route path="/register"       element={<RegisterPage />} />
             <Route path="/products"       element={<AllSpicesPage />} />
             <Route path="/products/:slug" element={<ProductDetailPage />} />
-            <Route path="/cart"           element={<ProtectedRoute><div className="p-8">Cart — coming soon</div></ProtectedRoute>} />
-            <Route path="/profile"        element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/cart"                                   element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+            <Route path="/checkout"                              element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
+            <Route path="/orders/:orderNumber/confirmation"     element={<ProtectedRoute><OrderConfirmationPage /></ProtectedRoute>} />
+            <Route path="/profile"                              element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           </Route>
         </Routes>
       </BrowserRouter>

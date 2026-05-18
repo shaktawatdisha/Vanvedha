@@ -11,7 +11,7 @@ export const authApi = {
   // Addresses
   getAddresses:      () => api.get('/auth/addresses/'),
   createAddress:     (data) => api.post('/auth/addresses/', data),
-  updateAddress:     (id, data) => api.put(`/auth/addresses/${id}/`, data),
+  updateAddress:     (id, data) => api.patch(`/auth/addresses/${id}/`, data),
   deleteAddress:     (id) => api.delete(`/auth/addresses/${id}/`),
   setDefaultAddress: (id) => api.patch(`/auth/addresses/${id}/set-default/`),
 };

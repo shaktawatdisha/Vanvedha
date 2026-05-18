@@ -65,7 +65,7 @@ class AddressListCreateView(generics.ListCreateAPIView):
     serializer_class = AddressSerializer
 
     def get_queryset(self):
-        return Address.objects.filter(user=self.request.user, is_active=True)
+        return Address.objects.filter(user=self.request.user).order_by('-is_default', '-created_at')
 
 
 class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -75,8 +75,7 @@ class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Address.objects.filter(user=self.request.user)
 
     def perform_destroy(self, instance):
-        instance.is_active = False
-        instance.save()
+        instance.delete()
 
 
 class SetDefaultAddressView(APIView):

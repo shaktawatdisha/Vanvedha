@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { catalogApi } from '../../api/catalog';
-import { cartApi }    from '../../api/cart';
 import { reviewsApi } from '../../api/reviews';
+import { useCartStore } from '../../store/cartStore';
 
 /* ─── Star row ─── */
 function Stars({ value, max = 5, size = 'text-xl' }) {
@@ -156,6 +156,7 @@ export default function ProductDetailPage() {
   const { slug }     = useParams();
   const navigate     = useNavigate();
 
+  const { addItem: addToCartStore } = useCartStore();
   const [product,     setProduct]     = useState(null);
   const [reviews,     setReviews]     = useState([]);
   const [loading,     setLoading]     = useState(true);
@@ -191,7 +192,7 @@ export default function ProductDetailPage() {
     if (!selVariant) return;
     setAddingCart(true);
     try {
-      await cartApi.addItem({ variant_id: selVariant.id, quantity: qty });
+      await addToCartStore(selVariant.id, qty);
       toast.success('Added to cart');
     } catch {
       toast.error('Failed to add to cart. Please log in first.');

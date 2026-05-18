@@ -30,4 +30,7 @@ export const adminApi = {
   getDeliveryAgents:    (params) => api.get('/admin/delivery-agents/', { params }),
   getDeliveryAgent:     (id) => api.get(`/admin/delivery-agents/${id}/`),
   updateDeliveryAgent:  (id, data) => api.patch(`/admin/delivery-agents/${id}/`, data),
+
+  // User addresses (admin view)
+  getUserAddresses: (id) => api.get(`/admin/users/${id}/addresses/`),
 };
