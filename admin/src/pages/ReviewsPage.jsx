@@ -24,18 +24,19 @@ function StarRating({ rating }) {
 export default function ReviewsPage() {
   const qc = useQueryClient();
   const [filters, setFilters] = useState({ is_approved: '', rating: '' });
+  const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-reviews', filters],
+    queryKey: ['admin-reviews', filters, page],
     queryFn: () =>
-      adminApi.getReviews(Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))).then(r => r.data),
+      adminApi.getReviews({ ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== '')), page }).then(r => r.data),
   });
 
   const invalidate = () => qc.invalidateQueries(['admin-reviews']);
   const approveMut = useMutation({ mutationFn: (id) => adminApi.approveReview(id), onSuccess: () => { toast.success('Review approved'); invalidate(); } });
   const rejectMut  = useMutation({ mutationFn: (id) => adminApi.rejectReview(id),  onSuccess: () => { toast.success('Review rejected'); invalidate(); } });
 
-  const set = (key) => (e) => setFilters(f => ({ ...f, [key]: e.target.value }));
+  const set = (key) => (e) => { setFilters(f => ({ ...f, [key]: e.target.value })); setPage(1); };
 
   const pending  = data?.results?.filter(r => !r.is_approved).length ?? 0;
   const approved = data?.results?.filter(r => r.is_approved).length ?? 0;
@@ -139,9 +140,9 @@ export default function ReviewsPage() {
           </div>
         )}
 
-        {data?.count > 0 && (
-          <p className="text-xs text-stone-400 text-center">Showing {data.results?.length} of {data.count} reviews</p>
-        )}
+        <div className="bg-white rounded-2xl shadow-sm border border-stone-100">
+          <Pagination page={page} totalPages={data?.total_pages} count={data?.count} onPageChange={setPage} />
+        </div>
       </div>
     </div>
   );

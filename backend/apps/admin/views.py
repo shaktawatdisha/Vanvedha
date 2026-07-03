@@ -17,7 +17,7 @@ from apps.catalog.models import Product, ProductVariant, ProductImage, Category,
 from apps.coupons.models import Coupon
 from apps.reviews.models import Review
 
-from .permissions import IsAdminRole
+from .permissions import IsAdminRole, HasModulePermission
 from .serializers import (
     AdminUserListSerializer, AdminUserDetailSerializer,
     AdminDeliveryAgentSerializer,
@@ -26,10 +26,23 @@ from .serializers import (
 )
 
 
+def _permissions_payload(user):
+    """Full access for ADMIN; resolved per-module CRUD flags for STAFF."""
+    if user.role == Role.ADMIN:
+        return {module: {'view': True, 'create': True, 'edit': True, 'delete': True} for module in StaffModule.values}
+    profile = getattr(user, 'staff_profile', None)
+    if not profile:
+        return {}
+    return {
+        module: {action: profile.effective_permission(module, action) for action in ('view', 'create', 'edit', 'delete')}
+        for module in StaffModule.values
+    }
+
+
 # ── Admin Login ────────────────────────────────────────────────────────────────
 
 class AdminLoginView(APIView):
-    """Dedicated login endpoint — only allows ADMIN role users."""
+    """Dedicated login endpoint — allows ADMIN and active STAFF accounts."""
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -50,14 +63,20 @@ class AdminLoginView(APIView):
         if not user.is_active:
             return Response({'detail': 'Account is deactivated.'}, status=status.HTTP_403_FORBIDDEN)
 
-        if user.role != Role.ADMIN:
-            return Response({'detail': 'Access denied. Admin accounts only.'}, status=status.HTTP_403_FORBIDDEN)
+        if user.role not in (Role.ADMIN, Role.STAFF):
+            return Response({'detail': 'Access denied. Admin or staff accounts only.'}, status=status.HTTP_403_FORBIDDEN)
+
+        if user.role == Role.STAFF:
+            profile = getattr(user, 'staff_profile', None)
+            if not profile or not profile.is_active:
+                return Response({'detail': 'Your staff account is not active. Contact an admin.'}, status=status.HTTP_403_FORBIDDEN)
 
         refresh = RefreshToken.for_user(user)
         return Response({
-            'access':  str(refresh.access_token),
-            'refresh': str(refresh),
-            'user':    UserSerializer(user).data,
+            'access':      str(refresh.access_token),
+            'refresh':     str(refresh),
+            'user':        UserSerializer(user).data,
+            'permissions': _permissions_payload(user),
         })
 
 
@@ -89,7 +108,8 @@ class AdminUserFilter(django_filters.FilterSet):
 
 
 class AdminUserListView(generics.ListAPIView):
-    permission_classes  = [IsAdminRole]
+    permission_classes  = [HasModulePermission]
+    module              = StaffModule.ACCOUNTS_USERS
     serializer_class    = AdminUserListSerializer
     filter_backends     = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class     = AdminUserFilter
@@ -102,7 +122,8 @@ class AdminUserListView(generics.ListAPIView):
 
 
 class AdminUserDetailView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ACCOUNTS_USERS
     serializer_class   = AdminUserDetailSerializer
     queryset           = User.objects.all()
     lookup_field       = 'id'
@@ -113,7 +134,9 @@ class AdminUserDetailView(generics.RetrieveUpdateAPIView):
 
 
 class AdminUserActivateView(APIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ACCOUNTS_USERS
+    permission_action  = 'edit'
 
     def post(self, request, id):
         user = get_object_or_404(User, id=id)
@@ -123,7 +146,9 @@ class AdminUserActivateView(APIView):
 
 
 class AdminUserDeactivateView(APIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ACCOUNTS_USERS
+    permission_action  = 'edit'
 
     def post(self, request, id):
         user = get_object_or_404(User, id=id)
@@ -138,7 +163,9 @@ class AdminUserDeactivateView(APIView):
 
 
 class AdminUserVerifyView(APIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ACCOUNTS_USERS
+    permission_action  = 'edit'
 
     def post(self, request, id):
         user = get_object_or_404(User, id=id)
@@ -180,7 +207,8 @@ class AdminChangeRoleView(APIView):
 
 
 class AdminUserAddressesView(generics.ListAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ACCOUNTS_USERS
     serializer_class = AddressSerializer
     pagination_class = None
 
@@ -255,7 +283,8 @@ class AdminStaffProfileView(APIView):
 # ── Delivery Agent Management ─────────────────────────────────────────────────
 
 class AdminDeliveryAgentListView(generics.ListAPIView):
-    permission_classes  = [IsAdminRole]
+    permission_classes  = [HasModulePermission]
+    module              = StaffModule.ACCOUNTS_USERS
     serializer_class    = AdminDeliveryAgentSerializer
     filter_backends     = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields    = ['vehicle_type', 'is_available']
@@ -266,7 +295,8 @@ class AdminDeliveryAgentListView(generics.ListAPIView):
 
 
 class AdminDeliveryAgentDetailView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ACCOUNTS_USERS
     serializer_class   = AdminDeliveryAgentSerializer
     queryset           = DeliveryAgentProfile.objects.select_related('user')
 
@@ -278,7 +308,8 @@ class AdminDeliveryAgentDetailView(generics.RetrieveUpdateAPIView):
 # ── Order Management ───────────────────────────────────────────────────────────
 
 class AdminOrderListView(generics.ListAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ORDERS_PAYMENTS
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['order_number', 'user__email', 'user__first_name']
     filterset_fields = ['status']
@@ -302,7 +333,8 @@ class AdminOrderListView(generics.ListAPIView):
 
 
 class AdminOrderDetailView(generics.RetrieveAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ORDERS_PAYMENTS
     lookup_field = 'order_number'
 
     def get_queryset(self):
@@ -325,7 +357,8 @@ class AdminOrderDetailView(generics.RetrieveAPIView):
 
 
 class AdminOrderUpdateStatusView(APIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ORDERS_PAYMENTS
 
     def patch(self, request, order_number):
         order = get_object_or_404(Order, order_number=order_number)
@@ -341,7 +374,8 @@ class AdminOrderUpdateStatusView(APIView):
 # ── Product Management ─────────────────────────────────────────────────────────
 
 class AdminCategoryListView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
@@ -382,7 +416,8 @@ class AdminCategoryListView(generics.ListCreateAPIView):
 
 
 class AdminCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
 
     def get_queryset(self):
         return Category.objects.prefetch_related('children')
@@ -404,7 +439,8 @@ class AdminCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class AdminProductListView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name', 'sku']
     filterset_fields = ['category', 'is_featured', 'is_organic']
@@ -461,7 +497,8 @@ class AdminProductListView(generics.ListCreateAPIView):
 
 
 class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
     queryset = Product.objects.select_related('category').prefetch_related('variants', 'images', 'tags')
 
     def get_serializer_class(self):
@@ -502,7 +539,8 @@ class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class AdminProductTagsView(APIView):
     """GET current tags / PATCH to set tags on a product."""
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
 
     def get(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
@@ -518,7 +556,8 @@ class AdminProductTagsView(APIView):
 
 
 class AdminProductVariantListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
     pagination_class   = None
 
     def get_queryset(self):
@@ -538,7 +577,8 @@ class AdminProductVariantListCreateView(generics.ListCreateAPIView):
 
 
 class AdminProductVariantDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
 
     def get_queryset(self):
         return ProductVariant.objects.filter(product_id=self.kwargs['product_pk'])
@@ -557,7 +597,8 @@ class AdminProductVariantDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class AdminProductToggleFeaturedView(APIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
 
     def patch(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
@@ -569,7 +610,8 @@ class AdminProductToggleFeaturedView(APIView):
 # ── Coupon Management ──────────────────────────────────────────────────────────
 
 class AdminCouponListView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ORDERS_PAYMENTS
 
     def get_queryset(self):
         return Coupon.objects.all().order_by('-created_at')
@@ -584,7 +626,8 @@ class AdminCouponListView(generics.ListCreateAPIView):
 
 
 class AdminCouponDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.ORDERS_PAYMENTS
 
     def get_queryset(self):
         return Coupon.objects.all()
@@ -601,7 +644,8 @@ class AdminCouponDetailView(generics.RetrieveUpdateDestroyAPIView):
 # ── Review Management ──────────────────────────────────────────────────────────
 
 class AdminReviewListView(generics.ListAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_approved', 'rating']
 
@@ -620,7 +664,9 @@ class AdminReviewListView(generics.ListAPIView):
 
 
 class AdminReviewApproveView(APIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
+    permission_action  = 'edit'
 
     def post(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
@@ -630,7 +676,9 @@ class AdminReviewApproveView(APIView):
 
 
 class AdminReviewRejectView(APIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
+    permission_action  = 'edit'
 
     def post(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
@@ -661,7 +709,8 @@ def _image_serializer_class(context=None):
 
 
 class AdminProductImageListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
 
     def get_queryset(self):
         return ProductImage.objects.filter(product_id=self.kwargs['product_pk']).order_by('sort_order', 'id')
@@ -691,7 +740,8 @@ class AdminProductImageListCreateView(generics.ListCreateAPIView):
 
 
 class AdminProductImageDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
 
     def get_queryset(self):
         return ProductImage.objects.filter(product_id=self.kwargs['product_pk'])
@@ -719,7 +769,9 @@ class AdminProductImageDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class AdminProductSetPrimaryImageView(APIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
+    permission_action  = 'edit'
 
     def post(self, request, product_pk, pk):
         product = get_object_or_404(Product, pk=product_pk)
@@ -733,7 +785,8 @@ class AdminProductSetPrimaryImageView(APIView):
 # ── Tag Management ────────────────────────────────────────────────────────────
 
 class AdminTagListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
@@ -771,7 +824,8 @@ class AdminTagListCreateView(generics.ListCreateAPIView):
 
 
 class AdminTagDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminRole]
+    permission_classes = [HasModulePermission]
+    module             = StaffModule.CATALOG_REVIEWS
     queryset = Tag.objects.all()
 
     def get_serializer_class(self):

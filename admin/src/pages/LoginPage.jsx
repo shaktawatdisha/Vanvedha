@@ -4,22 +4,28 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { authApi } from '../api/auth';
 import { useAuthStore } from '../store/authStore';
+import { firstAllowedPath } from '../constants/permissions';
 
 const schema = z.object({
   email:    z.email({ error: 'Invalid email' }),
   password: z.string().min(1, 'Password required'),
 });
 
+function landingPathFor(user, permissions) {
+  if (user?.role === 'ADMIN') return '/dashboard';
+  return firstAllowedPath(permissions) || '/login';
+}
+
 export default function LoginPage() {
-  const { setAuth, isAuthenticated, user } = useAuthStore();
+  const { setAuth, isAuthenticated, user, permissions } = useAuthStore();
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
   });
 
   // Already authenticated → hard redirect so ProtectedRoute hydrates correctly
-  if (isAuthenticated && user?.role === 'ADMIN') {
-    window.location.replace('/dashboard');
+  if (isAuthenticated && (user?.role === 'ADMIN' || user?.role === 'STAFF')) {
+    window.location.replace(landingPathFor(user, permissions));
     return null;
   }
 
@@ -27,10 +33,10 @@ export default function LoginPage() {
     try {
       const { data } = await authApi.login(values);
       // Persist auth state BEFORE navigating
-      setAuth(data.user, data.access, data.refresh);
+      setAuth(data.user, data.access, data.refresh, data.permissions);
       toast.success(`Welcome back, ${data.user?.first_name || 'Admin'}!`);
       // Hard navigate: forces full re-mount so ProtectedRoute reads fresh state
-      window.location.replace('/dashboard');
+      window.location.replace(landingPathFor(data.user, data.permissions));
     } catch (err) {
       const msg = err.response?.data?.detail || err.message || 'Login failed';
       toast.error(msg);
@@ -53,7 +59,7 @@ export default function LoginPage() {
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-xl shadow-stone-200 p-8">
           <h2 className="text-2xl font-black text-stone-900 mb-1">Sign In</h2>
-          <p className="text-sm text-stone-500 mb-6">Admin access only</p>
+          <p className="text-sm text-stone-500 mb-6">Admin & staff access only</p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 

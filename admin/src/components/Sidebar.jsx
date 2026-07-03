@@ -1,30 +1,31 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { canViewModule } from '../constants/permissions';
 import toast from 'react-hot-toast';
 
 const NAV = [
-  { to: '/dashboard',        icon: 'dashboard',        label: 'Dashboard',       end: true },
+  { to: '/dashboard',        icon: 'dashboard',        label: 'Dashboard',       end: true, adminOnly: true },
   { divider: true, label: 'People' },
-  { to: '/users',            icon: 'group',            label: 'Users'                      },
-  { to: '/staff-permissions', icon: 'badge',            label: 'Staff Permissions'          },
-  { to: '/delivery-agents',  icon: 'local_shipping',   label: 'Delivery Agents'            },
+  { to: '/users',            icon: 'group',            label: 'Users',                      module: 'accounts_users' },
+  { to: '/staff-permissions', icon: 'badge',            label: 'Staff Permissions',          adminOnly: true },
+  { to: '/delivery-agents',  icon: 'local_shipping',   label: 'Delivery Agents',            module: 'accounts_users' },
   { divider: true, label: 'Catalog' },
-  { to: '/categories',       icon: 'category',         label: 'Categories'                 },
-  { to: '/tags',             icon: 'label',            label: 'Tags'                       },
-  { to: '/products',         icon: 'inventory_2',      label: 'Products'                   },
+  { to: '/categories',       icon: 'category',         label: 'Categories',                 module: 'catalog_reviews' },
+  { to: '/tags',             icon: 'label',            label: 'Tags',                       module: 'catalog_reviews' },
+  { to: '/products',         icon: 'inventory_2',      label: 'Products',                   module: 'catalog_reviews' },
   { divider: true, label: 'Commerce' },
-  { to: '/orders',           icon: 'receipt_long',     label: 'Orders'                     },
-  { to: '/coupons',          icon: 'local_offer',      label: 'Coupons'                    },
-  { to: '/reviews',          icon: 'rate_review',      label: 'Reviews'                    },
+  { to: '/orders',           icon: 'receipt_long',     label: 'Orders',                     module: 'orders_payments' },
+  { to: '/coupons',          icon: 'local_offer',      label: 'Coupons',                    module: 'orders_payments' },
+  { to: '/reviews',          icon: 'rate_review',      label: 'Reviews',                    module: 'catalog_reviews' },
   { divider: true, label: 'Raw Material' },
-  { to: '/raw-material/suppliers',  icon: 'agriculture',      label: 'Suppliers'             },
-  { to: '/raw-material/raw-lots',   icon: 'weight',           label: 'Raw Material Lots'     },
-  { to: '/raw-material/batches',    icon: 'blender',          label: 'Processing Batches'    },
-  { to: '/raw-material/scan',       icon: 'barcode_scanner',  label: 'Barcode Lookup'        },
+  { to: '/raw-material/suppliers',  icon: 'agriculture',      label: 'Suppliers',           module: 'procurement' },
+  { to: '/raw-material/raw-lots',   icon: 'weight',           label: 'Raw Material Lots',   module: 'procurement' },
+  { to: '/raw-material/batches',    icon: 'blender',          label: 'Processing Batches',  module: 'procurement' },
+  { to: '/raw-material/scan',       icon: 'barcode_scanner',  label: 'Barcode Lookup',       module: 'procurement' },
 ];
 
 export default function Sidebar() {
-  const { user, logout } = useAuthStore();
+  const { user, permissions, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -32,6 +33,19 @@ export default function Sidebar() {
     toast.success('Signed out');
     navigate('/login');
   };
+
+  const isStaff = user?.role === 'STAFF';
+  const visibleNav = NAV.filter((item) => {
+    if (item.divider) return true;
+    if (!isStaff) return true;
+    if (item.adminOnly) return false;
+    return canViewModule(permissions, item.module);
+  }).filter((item, idx, arr) => {
+    // Drop dividers that have no visible items before the next divider/end.
+    if (!item.divider) return true;
+    const next = arr[idx + 1];
+    return next && !next.divider;
+  });
 
   return (
     <aside className="w-64 shrink-0 bg-stone-900 min-h-screen flex flex-col">
@@ -46,7 +60,7 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 py-4 px-3 flex flex-col gap-0.5 overflow-y-auto">
-        {NAV.map((item) =>
+        {visibleNav.map((item) =>
           item.divider ? (
             <p key={item.label} className="px-4 pt-4 pb-1 text-[10px] font-bold text-stone-600 uppercase tracking-widest">
               {item.label}
