@@ -9,11 +9,16 @@ export const adminApi = {
   deactivateUser: (id) => api.post(`/admin/users/${id}/deactivate/`),
   verifyUser:     (id) => api.post(`/admin/users/${id}/verify/`),
   changeRole:     (id, role) => api.patch(`/admin/users/${id}/change-role/`, { role }),
+  getStaffProfile:    (id)       => api.get(`/admin/users/${id}/staff-profile/`),
+  assignStaffProfile: (id, data) => api.patch(`/admin/users/${id}/staff-profile/`, data),
 
-  // Vendors
-  getVendors:    (params) => api.get('/admin/vendors/', { params }),
-  approveVendor: (id) => api.post(`/admin/vendors/${id}/approve/`),
-  rejectVendor:  (id) => api.post(`/admin/vendors/${id}/reject/`),
+  // Staff permissions
+  getStaffModules:      ()            => api.get('/admin/staff-modules/'),
+  getStaffPermissions:  (params)      => api.get('/admin/permission-templates/', { params }),
+  getStaffPermission:   (id)          => api.get(`/admin/permission-templates/${id}/`),
+  createStaffPermission: (data)       => api.post('/admin/permission-templates/', data),
+  updateStaffPermission: (id, data)   => api.patch(`/admin/permission-templates/${id}/`, data),
+  deleteStaffPermission: (id)         => api.delete(`/admin/permission-templates/${id}/`),
 
   // Delivery agents
   getDeliveryAgents:   (params) => api.get('/admin/delivery-agents/', { params }),
@@ -69,4 +74,26 @@ export const adminApi = {
   getReviews:     (params) => api.get('/admin/reviews/', { params }),
   approveReview:  (id) => api.post(`/admin/reviews/${id}/approve/`),
   rejectReview:   (id) => api.post(`/admin/reviews/${id}/reject/`),
+
+  // Procurement — Suppliers
+  getSuppliers:    (params) => api.get('/procurement/suppliers/', { params }),
+  createSupplier:  (data)   => api.post('/procurement/suppliers/', data),
+  updateSupplier:  (id, data) => api.patch(`/procurement/suppliers/${id}/`, data),
+  deleteSupplier:  (id)     => api.delete(`/procurement/suppliers/${id}/`),
+
+  // Procurement — Raw Material Lots
+  getRawLots:    (params) => api.get('/procurement/raw-lots/', { params }),
+  createRawLot:  (data)   => api.post('/procurement/raw-lots/', data),
+  updateRawLot:  (id, data) => api.patch(`/procurement/raw-lots/${id}/`, data),
+  deleteRawLot:  (id)     => api.delete(`/procurement/raw-lots/${id}/`),
+
+  // Procurement — Processing Batches
+  getBatches:     (params) => api.get('/procurement/batches/', { params }),
+  createBatch:    (data)   => api.post('/procurement/batches/', data),
+  updateBatch:    (id, data) => api.patch(`/procurement/batches/${id}/`, data),
+  deleteBatch:    (id)     => api.delete(`/procurement/batches/${id}/`),
+  confirmBatch:   (id)     => api.post(`/procurement/batches/${id}/confirm/`),
+
+  // Barcode lookup (searches both raw lots and processing batches)
+  barcodeLookup: (barcode) => api.get('/procurement/lookup/', { params: { barcode } }),
 };

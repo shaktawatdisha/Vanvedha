@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { adminApi } from '../api/admin';
 import Topbar from '../components/Topbar';
+import Pagination from '../components/Pagination';
 
 const STATUS_LIST = ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED'];
 
@@ -176,13 +177,14 @@ function OrderDetailModal({ orderNumber, onClose }) {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function OrdersPage() {
   const [filters, setFilters] = useState({ status: '', search: '' });
+  const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(null);
   const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-orders', filters],
+    queryKey: ['admin-orders', filters, page],
     queryFn: () =>
-      adminApi.getOrders(Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))).then(r => r.data),
+      adminApi.getOrders({ ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== '')), page }).then(r => r.data),
   });
 
   const inlineStatusMut = useMutation({
@@ -191,7 +193,7 @@ export default function OrdersPage() {
     onError: () => toast.error('Failed to update status'),
   });
 
-  const set = (key) => (e) => setFilters(f => ({ ...f, [key]: e.target.value }));
+  const set = (key) => (e) => { setFilters(f => ({ ...f, [key]: e.target.value })); setPage(1); };
 
   return (
     <div className="flex flex-col min-h-screen bg-stone-100">
@@ -219,7 +221,7 @@ export default function OrdersPage() {
           </select>
           {(filters.search || filters.status) && (
             <button
-              onClick={() => setFilters({ status: '', search: '' })}
+              onClick={() => { setFilters({ status: '', search: '' }); setPage(1); }}
               className="px-3 py-2.5 text-sm text-stone-500 hover:text-stone-700 border border-stone-200 rounded-xl bg-white cursor-pointer"
             >
               Clear
@@ -234,9 +236,9 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="overflow-auto max-h-[70vh]">
               <table className="w-full">
-                <thead className="bg-stone-50 border-b border-stone-100">
+                <thead className="bg-stone-50 border-b border-stone-100 sticky top-0 z-10">
                   <tr>
                     {['Order #', 'Customer', 'Items', 'Total', 'Status', 'Date', 'Actions'].map(h => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
@@ -292,11 +294,7 @@ export default function OrdersPage() {
                 </tbody>
               </table>
             </div>
-            {data?.count > 0 && (
-              <div className="px-4 py-3 border-t border-stone-100 text-xs text-stone-400">
-                Showing {data.results?.length} of {data.count} orders
-              </div>
-            )}
+            <Pagination page={page} totalPages={data?.total_pages} count={data?.count} onPageChange={setPage} />
           </div>
         )}
       </div>

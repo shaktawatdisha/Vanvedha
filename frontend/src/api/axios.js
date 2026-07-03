@@ -2,7 +2,11 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    // Skip ngrok's browser-warning interstitial page (it has no CORS headers, which breaks real browser requests)
+    'ngrok-skip-browser-warning': 'true',
+  },
 });
 
 // Attach access token to every request
@@ -17,13 +21,15 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && !original._retry) {
+    const isAuthEndpoint = original?.url?.includes('/auth/login') || original?.url?.includes('/auth/register');
+    if (error.response?.status === 401 && !original._retry && !isAuthEndpoint) {
       original._retry = true;
       try {
         const refresh = localStorage.getItem('refresh_token');
         const { data } = await axios.post(
           `${import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/auth/token/refresh/`,
-          { refresh }
+          { refresh },
+          { headers: { 'ngrok-skip-browser-warning': 'true' } }
         );
         localStorage.setItem('access_token', data.access);
         original.headers.Authorization = `Bearer ${data.access}`;

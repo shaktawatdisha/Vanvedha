@@ -2,18 +2,6 @@ from rest_framework.permissions import BasePermission
 from .models import Role
 
 
-class IsVendorRole(BasePermission):
-    """Allows access only to users with role=VENDOR."""
-    message = 'You do not have vendor privileges.'
-
-    def has_permission(self, request, view):
-        return (
-            request.user
-            and request.user.is_authenticated
-            and request.user.role == Role.VENDOR
-        )
-
-
 class IsDeliveryRole(BasePermission):
     """Allows access only to users with role=DELIVERY."""
     message = 'You do not have delivery agent privileges.'

@@ -3,14 +3,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { adminApi } from '../api/admin';
 import Topbar from '../components/Topbar';
+import Pagination from '../components/Pagination';
 
 export default function DeliveryAgentsPage() {
   const qc = useQueryClient();
   const [filter, setFilter] = useState('');
+  const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-delivery', filter],
-    queryFn: () => adminApi.getDeliveryAgents(filter !== '' ? { is_available: filter } : {}).then((r) => r.data),
+    queryKey: ['admin-delivery', filter, page],
+    queryFn: () => adminApi.getDeliveryAgents({ ...(filter !== '' ? { is_available: filter } : {}), page }).then((r) => r.data),
   });
 
   const updateMut = useMutation({
@@ -27,7 +29,7 @@ export default function DeliveryAgentsPage() {
         <div>
           <select
             value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            onChange={(e) => { setFilter(e.target.value); setPage(1); }}
             className="px-4 py-2.5 border border-stone-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#ec4913]/30 cursor-pointer"
           >
             <option value="">All Agents</option>
@@ -42,9 +44,9 @@ export default function DeliveryAgentsPage() {
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="overflow-auto max-h-[70vh]">
               <table className="w-full">
-                <thead className="bg-stone-50 border-b border-stone-100">
+                <thead className="bg-stone-50 border-b border-stone-100 sticky top-0 z-10">
                   <tr>
                     {['Name', 'Email', 'Phone', 'Vehicle', 'Reg. Number', 'Zone', 'Availability', 'Action'].map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
@@ -86,11 +88,7 @@ export default function DeliveryAgentsPage() {
                 </tbody>
               </table>
             </div>
-            {data?.count > 0 && (
-              <div className="px-4 py-3 border-t border-stone-100 text-xs text-stone-400">
-                Showing {data.results?.length} of {data.count} agents
-              </div>
-            )}
+            <Pagination page={page} totalPages={data?.total_pages} count={data?.count} onPageChange={setPage} />
           </div>
         )}
       </div>

@@ -6,6 +6,7 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { adminApi } from '../api/admin';
 import Topbar from '../components/Topbar';
+import Pagination from '../components/Pagination';
 
 const schema = z.object({
   code:           z.string().min(2, 'Min 2 chars').max(20, 'Max 20 chars').toUpperCase(),
@@ -131,10 +132,11 @@ function CreateCouponModal({ onClose, onCreated }) {
 export default function CouponsPage() {
   const qc = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
+  const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-coupons'],
-    queryFn: () => adminApi.getCoupons().then(r => r.data),
+    queryKey: ['admin-coupons', page],
+    queryFn: () => adminApi.getCoupons({ page }).then(r => r.data),
   });
 
   const deleteMut = useMutation({
@@ -165,9 +167,9 @@ export default function CouponsPage() {
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="overflow-auto max-h-[70vh]">
               <table className="w-full">
-                <thead className="bg-stone-50 border-b border-stone-100">
+                <thead className="bg-stone-50 border-b border-stone-100 sticky top-0 z-10">
                   <tr>
                     {['Code', 'Type', 'Discount', 'Min Order', 'Usage', 'Valid Until', 'Status', 'Action'].map(h => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
@@ -214,11 +216,7 @@ export default function CouponsPage() {
                 </tbody>
               </table>
             </div>
-            {data?.count > 0 && (
-              <div className="px-4 py-3 border-t border-stone-100 text-xs text-stone-400">
-                {data.count} coupon{data.count !== 1 ? 's' : ''} total
-              </div>
-            )}
+            <Pagination page={page} totalPages={data?.total_pages} count={data?.count} onPageChange={setPage} />
           </div>
         )}
       </div>

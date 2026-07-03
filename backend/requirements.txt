@@ -16,3 +16,4 @@ stripe==10.*
 Pillow==11.*
 bleach==6.*
 django-ratelimit==4.*
+google-auth==2.*

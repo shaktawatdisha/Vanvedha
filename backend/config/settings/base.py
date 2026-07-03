@@ -10,6 +10,8 @@ SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
+GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID', default='')
+
 DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +45,7 @@ LOCAL_APPS = [
     'apps.analytics',
     'apps.notifications',
     'apps.admin',
+    'apps.procurement',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -167,6 +170,9 @@ SIMPLE_JWT = {
 # ── CORS ──────────────────────────────────────────────────────────────────────
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['*'])
 
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + ['ngrok-skip-browser-warning']
+
 # ── API docs ──────────────────────────────────────────────────────────────────
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Vanvedha Spice Store API',
@@ -179,6 +185,7 @@ RAZORPAY_KEY_ID = env('RAZORPAY_KEY_ID', default='')
 RAZORPAY_KEY_SECRET = env('RAZORPAY_KEY_SECRET', default='')
 
 STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='')
+STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY', default='')
 STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='')
 
 # ── Email ─────────────────────────────────────────────────────────────────────

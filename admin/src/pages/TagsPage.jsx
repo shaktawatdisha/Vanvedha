@@ -6,6 +6,7 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { adminApi } from '../api/admin';
 import Topbar from '../components/Topbar';
+import Pagination from '../components/Pagination';
 
 const inp = 'w-full px-3 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ec4913]/30 focus:border-[#ec4913]';
 const lbl = 'block text-xs font-semibold text-stone-600 mb-1';
@@ -88,11 +89,12 @@ function TagModal({ tag, onClose }) {
 export default function TagsPage() {
   const qc = useQueryClient();
   const [search, setSearch] = useState('');
+  const [page, setPage]     = useState(1);
   const [modal,  setModal]  = useState(null); // null | 'create' | tag object
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-tags', search],
-    queryFn:  () => adminApi.getTags(search ? { search } : {}).then((r) => r.data),
+    queryKey: ['admin-tags', search, page],
+    queryFn:  () => adminApi.getTags({ ...(search ? { search } : {}), page }).then((r) => r.data),
   });
 
   const tags = Array.isArray(data) ? data : (data?.results ?? []);
@@ -115,7 +117,7 @@ export default function TagsPage() {
             <input
               placeholder="Search tags…"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               className="pl-9 pr-4 py-2.5 border border-stone-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#ec4913]/30 w-52"
             />
           </div>
@@ -135,9 +137,9 @@ export default function TagsPage() {
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="overflow-auto max-h-[70vh]">
               <table className="w-full">
-                <thead className="bg-stone-50 border-b border-stone-100">
+                <thead className="bg-stone-50 border-b border-stone-100 sticky top-0 z-10">
                   <tr>
                     {['Name', 'Slug', 'Products', 'Actions'].map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
@@ -206,11 +208,7 @@ export default function TagsPage() {
                 </tbody>
               </table>
             </div>
-            {tags.length > 0 && (
-              <div className="px-4 py-3 border-t border-stone-100 text-xs text-stone-400">
-                Showing {tags.length} {tags.length === 1 ? 'tag' : 'tags'}
-              </div>
-            )}
+            <Pagination page={page} totalPages={data?.total_pages} count={data?.count} onPageChange={setPage} />
           </div>
         )}
       </div>

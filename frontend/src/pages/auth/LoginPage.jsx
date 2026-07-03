@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
 import { authApi } from '../../api/auth';
 import { useAuthStore } from '../../store/authStore';
@@ -31,6 +32,17 @@ export default function LoginPage() {
       navigate(res.data.user.role === 'ADMIN' ? '/admin' : '/');
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Login failed');
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const res = await authApi.googleLogin(credentialResponse.credential);
+      setAuth(res.data.user, res.data.access, res.data.refresh);
+      toast.success('Welcome back!');
+      navigate(res.data.user.role === 'ADMIN' ? '/admin' : '/');
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Google sign-in failed');
     }
   };
 
@@ -137,22 +149,11 @@ export default function LoginPage() {
               <span className="flex-shrink mx-4 text-slate-400 text-sm font-medium">Or continue with</span>
               <div className="flex-grow border-t border-slate-200" />
             </div>
-            <div className="grid grid-cols-2 gap-4 mt-2">
-              <button className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer bg-white">
-                <svg className="w-5 h-5" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.1 29.3 35 24 35c-6.1 0-11-4.9-11-11s4.9-11 11-11c2.8 0 5.3 1 7.2 2.7l5.7-5.7C33.9 7.1 29.2 5 24 5 12.9 5 4 13.9 4 25s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
-                  <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.1 19 12 24 12c2.8 0 5.3 1 7.2 2.7l5.7-5.7C33.9 7.1 29.2 5 24 5c-7.7 0-14.4 4.4-17.7 9.7z"/>
-                  <path fill="#4CAF50" d="M24 45c5.2 0 9.9-1.9 13.4-5.1l-6.2-5.2C29.4 36.5 26.8 37.5 24 37.5c-5.2 0-9.6-3.5-11.2-8.2l-6.5 5C9.5 40.4 16.2 45 24 45z"/>
-                  <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.3 4.1-4.1 5.4l6.2 5.2C37 38.2 44 33 44 25c0-1.3-.1-2.6-.4-3.9z"/>
-                </svg>
-                <span className="text-sm font-semibold text-slate-700">Google</span>
-              </button>
-              <button className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer bg-white">
-                <svg className="w-5 h-5" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 21.8-88.5 21.8-11.4 0-53.8-24.3-89.8-22.8-44.6 1.9-88.7 33.7-111 74-45 81.3-11.5 201.2 32.3 264.4 21.4 30.8 47.1 65 80.5 63.8 32.3-1.3 44.4-20.9 83.5-20.9 39 0 50.3 20.9 83.9 20.2 34.3-.7 57.3-30.8 78.5-61.6 24.3-35.5 34.4-69.8 34.8-71.5-.7-.3-66.9-25.7-67.5-102.3zm-72-167.9c15.9-19.3 26.6-46 23.6-72.7-22.9 1-50.6 15.4-67 34.6-14.8 17.1-27.7 44.5-24.3 70.4 25.5 1.9 51.7-13.1 67.7-32.3z"/>
-                </svg>
-                <span className="text-sm font-semibold text-slate-700">Apple</span>
-              </button>
+            <div className="flex justify-center mt-2">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => toast.error('Google sign-in failed')}
+              />
             </div>
           </div>
 

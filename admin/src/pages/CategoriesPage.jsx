@@ -6,6 +6,7 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { adminApi } from '../api/admin';
 import Topbar from '../components/Topbar';
+import Pagination from '../components/Pagination';
 
 // ── Shared style helpers (same as ProductsPage) ────────────────────────────────
 const inp = 'w-full px-3 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ec4913]/30 focus:border-[#ec4913]';
@@ -117,11 +118,12 @@ function CategoryModal({ category, categories, onClose }) {
 export default function CategoriesPage() {
   const qc = useQueryClient();
   const [search, setSearch] = useState('');
+  const [page, setPage]     = useState(1);
   const [modal, setModal]   = useState(null); // null | 'create' | category object
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-categories', search],
-    queryFn:  () => adminApi.getCategories(search ? { search } : {}).then((r) => r.data),
+    queryKey: ['admin-categories', search, page],
+    queryFn:  () => adminApi.getCategories({ ...(search ? { search } : {}), page }).then((r) => r.data),
   });
 
   const categories = Array.isArray(data) ? data : (data?.results ?? []);
@@ -144,7 +146,7 @@ export default function CategoriesPage() {
             <input
               placeholder="Search categories…"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               className="pl-9 pr-4 py-2.5 border border-stone-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#ec4913]/30 w-52"
             />
           </div>
@@ -164,9 +166,9 @@ export default function CategoriesPage() {
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="overflow-auto max-h-[70vh]">
               <table className="w-full">
-                <thead className="bg-stone-50 border-b border-stone-100">
+                <thead className="bg-stone-50 border-b border-stone-100 sticky top-0 z-10">
                   <tr>
                     {['Name', 'Slug', 'Parent', 'Products', 'Sub-categories', 'Actions'].map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
@@ -227,11 +229,7 @@ export default function CategoriesPage() {
                 </tbody>
               </table>
             </div>
-            {categories.length > 0 && (
-              <div className="px-4 py-3 border-t border-stone-100 text-xs text-stone-400">
-                Showing {categories.length} {categories.length === 1 ? 'category' : 'categories'}
-              </div>
-            )}
+            <Pagination page={page} totalPages={data?.total_pages} count={data?.count} onPageChange={setPage} />
           </div>
         )}
       </div>

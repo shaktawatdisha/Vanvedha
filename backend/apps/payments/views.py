@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import razorpay
+import stripe
 from django.conf import settings
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +14,7 @@ from .models import Payment
 
 
 client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class InitiatePaymentView(APIView):
@@ -37,6 +39,25 @@ class InitiatePaymentView(APIView):
             order.save()
             OrderStatusHistory.objects.create(order=order, status='CONFIRMED', note='COD order confirmed.')
             return Response({'detail': 'COD order confirmed.', 'order_number': order.order_number})
+
+        if gateway == 'STRIPE':
+            intent = stripe.PaymentIntent.create(
+                amount=int(order.total_amount * 100),  # paise
+                currency='inr',
+                automatic_payment_methods={'enabled': True},
+                metadata={'order_number': order.order_number},
+            )
+            Payment.objects.create(
+                order=order,
+                gateway='STRIPE',
+                gateway_order_id=intent.id,
+                amount=order.total_amount,
+            )
+            return Response({
+                'client_secret': intent.client_secret,
+                'publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
+                'order_number': order.order_number,
+            })
 
         # Razorpay
         razorpay_order = client.order.create({
@@ -94,6 +115,73 @@ class VerifyPaymentView(APIView):
         OrderStatusHistory.objects.create(order=order, status='CONFIRMED', note='Payment verified.')
 
         return Response({'detail': 'Payment successful.', 'order_number': order.order_number})
+
+
+class VerifyStripePaymentView(APIView):
+    def post(self, request):
+        payment_intent_id = request.data.get('payment_intent_id')
+
+        payment = Payment.objects.filter(gateway_order_id=payment_intent_id, gateway='STRIPE').first()
+        if not payment:
+            return Response({'detail': 'Payment not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+        if intent.status != 'succeeded':
+            payment.status = 'FAILED'
+            payment.save()
+            return Response({'detail': 'Payment not completed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if payment.status != 'SUCCESS':
+            payment.gateway_payment_id = intent.id
+            payment.status = 'SUCCESS'
+            payment.paid_at = timezone.now()
+            payment.save()
+
+        order = payment.order
+        if order.status == 'PENDING':
+            order.status = 'CONFIRMED'
+            order.save()
+            OrderStatusHistory.objects.create(order=order, status='CONFIRMED', note='Stripe payment verified.')
+
+        return Response({'detail': 'Payment successful.', 'order_number': order.order_number})
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class StripeWebhookView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        payload = request.body
+        sig_header = request.headers.get('Stripe-Signature', '')
+
+        try:
+            event = stripe.Webhook.construct_event(payload, sig_header, settings.STRIPE_WEBHOOK_SECRET)
+        except (ValueError, stripe.error.SignatureVerificationError):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        intent = event['data']['object']
+
+        if event['type'] == 'payment_intent.succeeded':
+            payment = Payment.objects.filter(gateway_order_id=intent['id']).first()
+            if payment and payment.status != 'SUCCESS':
+                payment.status = 'SUCCESS'
+                payment.gateway_payment_id = intent['id']
+                payment.paid_at = timezone.now()
+                payment.save()
+                order = payment.order
+                if order.status == 'PENDING':
+                    order.status = 'CONFIRMED'
+                    order.save()
+                    OrderStatusHistory.objects.create(order=order, status='CONFIRMED', note='Stripe payment confirmed via webhook.')
+
+        elif event['type'] == 'payment_intent.payment_failed':
+            payment = Payment.objects.filter(gateway_order_id=intent['id']).first()
+            if payment:
+                payment.status = 'FAILED'
+                payment.save()
+
+        return Response({'status': 'ok'})
 
 
 @method_decorator(csrf_exempt, name='dispatch')

@@ -6,9 +6,16 @@ from core.models import TimestampedModel
 
 class Role(models.TextChoices):
     CUSTOMER = 'CUSTOMER', 'Customer'
-    VENDOR   = 'VENDOR',   'Vendor'
     DELIVERY = 'DELIVERY', 'Delivery Agent'
     ADMIN    = 'ADMIN',    'Admin'
+    STAFF    = 'STAFF',    'Staff'
+
+
+class StaffModule(models.TextChoices):
+    ORDERS_PAYMENTS  = 'orders_payments',  'Orders & Payments'
+    ACCOUNTS_USERS   = 'accounts_users',   'Accounts & Users'
+    CATALOG_REVIEWS  = 'catalog_reviews',  'Catalog & Reviews'
+    PROCUREMENT      = 'procurement',      'Procurement & Processing'
 
 
 class UserManager(BaseUserManager):
@@ -33,14 +40,14 @@ class UserManager(BaseUserManager):
     def customers(self):
         return self.filter(role=Role.CUSTOMER)
 
-    def vendors(self):
-        return self.filter(role=Role.VENDOR)
-
     def delivery_agents(self):
         return self.filter(role=Role.DELIVERY)
 
     def admins(self):
         return self.filter(role=Role.ADMIN)
+
+    def staff(self):
+        return self.filter(role=Role.STAFF)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -76,10 +83,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.role == Role.CUSTOMER
 
     @property
-    def is_vendor(self):
-        return self.role == Role.VENDOR
-
-    @property
     def is_delivery_agent(self):
         return self.role == Role.DELIVERY
 
@@ -87,21 +90,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_admin_user(self):
         return self.role == Role.ADMIN
 
-
-class VendorProfile(TimestampedModel):
-    """Extra info for users with role=VENDOR."""
-    user         = models.OneToOneField(User, on_delete=models.CASCADE, related_name='vendor_profile')
-    shop_name    = models.CharField(max_length=150)
-    gstin        = models.CharField(max_length=15, blank=True)
-    is_approved  = models.BooleanField(default=False)  # Admin must approve before vendor can list products
-    bank_account = models.CharField(max_length=20, blank=True)
-    ifsc_code    = models.CharField(max_length=11, blank=True)
-
-    class Meta:
-        db_table = 'vendor_profiles'
-
-    def __str__(self):
-        return f'{self.shop_name} ({self.user.email})'
+    @property
+    def is_staff_user(self):
+        return self.role == Role.STAFF
 
 
 class DeliveryAgentProfile(TimestampedModel):
@@ -119,6 +110,72 @@ class DeliveryAgentProfile(TimestampedModel):
 
     def __str__(self):
         return f'{self.user.full_name} – {self.vehicle_type}'
+
+
+class PermissionTemplate(TimestampedModel):
+    """
+    A named preset of module-level CRUD permissions that Admin can assign to Staff.
+    Examples: 'Order Manager', 'Accounts Staff', 'Procurement Staff'.
+    """
+    name        = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        db_table = 'permission_templates'
+
+    def __str__(self):
+        return self.name
+
+
+class TemplateModulePermission(models.Model):
+    """
+    CRUD access for one module inside a PermissionTemplate.
+    One row per (template, module) pair.
+    """
+    template   = models.ForeignKey(PermissionTemplate, on_delete=models.CASCADE, related_name='module_permissions')
+    module     = models.CharField(max_length=30, choices=StaffModule.choices)
+    can_view   = models.BooleanField(default=False)
+    can_create = models.BooleanField(default=False)
+    can_edit   = models.BooleanField(default=False)
+    can_delete = models.BooleanField(default=False)
+
+    class Meta:
+        db_table        = 'template_module_permissions'
+        unique_together = ('template', 'module')
+
+    def __str__(self):
+        perms = [a for a, v in [('V', self.can_view), ('C', self.can_create), ('E', self.can_edit), ('D', self.can_delete)] if v]
+        return f'{self.template.name} / {self.get_module_display()} [{",".join(perms) or "none"}]'
+
+
+class StaffProfile(TimestampedModel):
+    """
+    Extra info for users with role=STAFF.
+    Inherits CRUD permissions from template; overrides let Admin fine-tune per-staff.
+    """
+    user     = models.OneToOneField(User, on_delete=models.CASCADE, related_name='staff_profile')
+    template = models.ForeignKey(PermissionTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='staff_members')
+    # JSON override: {"orders_payments": {"view": true, "create": false, "edit": null, "delete": null}}
+    # null = inherit from template; explicit bool = override for this staff only.
+    permission_overrides = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        db_table = 'staff_profiles'
+
+    def __str__(self):
+        tpl = self.template.name if self.template else 'no template'
+        return f'{self.user.full_name} ({tpl})'
+
+    def effective_permission(self, module: str, action: str) -> bool:
+        """Return the resolved permission for (module, action) for this staff member."""
+        override = self.permission_overrides.get(module, {}).get(action)
+        if override is not None:
+            return bool(override)
+        if self.template:
+            mp = self.template.module_permissions.filter(module=module).first()
+            if mp:
+                return getattr(mp, f'can_{action}', False)
+        return False
 
 
 class Address(TimestampedModel):

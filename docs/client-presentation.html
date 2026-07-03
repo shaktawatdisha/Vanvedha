@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vanvedha — Application Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand:#ec4913;
+    --brand-dark:#c93a0a;
+    --bg-light:#f8f6f6;
+    --bg-dark:#221510;
+    --text:#1e293b;
+    --muted:#6b7280;
+    --green:#2d8a4e;
+    --card:#ffffff;
+    --border:#e7e2df;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Epilogue',sans-serif;
+    color:var(--text);
+    background:var(--bg-light);
+    line-height:1.55;
+  }
+  .progress{
+    position:fixed;top:0;left:0;height:4px;background:var(--brand);
+    z-index:999;width:0%;transition:width .1s linear;
+  }
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:900;
+    background:rgba(248,246,246,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:24px;
+    padding:14px 32px;
+  }
+  nav .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;}
+  nav .logo{
+    width:30px;height:30px;border-radius:8px;background:var(--bg-dark);
+    display:flex;align-items:center;justify-content:center;font-size:15px;
+  }
+  nav .links{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap;}
+  nav .links a{
+    font-size:13.5px;font-weight:600;color:var(--muted);text-decoration:none;
+    padding:6px 4px;border-bottom:2px solid transparent;
+  }
+  nav .links a:hover{color:var(--brand);border-color:var(--brand);}
+
+  section{
+    max-width:1100px;margin:0 auto;padding:110px 32px 70px;
+    scroll-margin-top:70px;
+  }
+  .eyebrow{
+    display:inline-block;color:var(--brand);font-weight:700;font-size:13px;
+    letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;
+  }
+  h1{font-size:46px;font-weight:800;line-height:1.15;}
+  h2{font-size:32px;font-weight:800;margin-bottom:14px;}
+  h3{font-size:19px;font-weight:700;margin-bottom:6px;}
+  p.lead{font-size:18px;color:var(--muted);max-width:680px;margin-top:16px;}
+  p.sub{color:var(--muted);font-size:15px;margin-top:6px;}
+
+  /* HERO */
+  #hero{
+    text-align:center;padding-top:160px;padding-bottom:90px;
+    background:radial-gradient(circle at 50% 0%, #fde3d4 0%, var(--bg-light) 60%);
+  }
+  #hero .logo-big{
+    width:64px;height:64px;border-radius:16px;background:var(--bg-dark);
+    display:flex;align-items:center;justify-content:center;font-size:30px;
+    margin:0 auto 24px;
+  }
+  #hero h1{font-size:54px;}
+  #hero .tag{
+    margin-top:18px;color:var(--muted);font-size:18px;max-width:600px;margin-inline:auto;
+  }
+  .badge-row{display:flex;gap:10px;justify-content:center;margin-top:30px;flex-wrap:wrap;}
+  .badge{
+    background:#fff;border:1px solid var(--border);border-radius:999px;
+    padding:8px 16px;font-size:13px;font-weight:600;color:var(--text);
+  }
+
+  /* ROLE CARDS */
+  .grid{display:grid;gap:20px;margin-top:36px;}
+  .grid.cols-4{grid-template-columns:repeat(4,1fr);}
+  .grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .grid.cols-2{grid-template-columns:repeat(2,1fr);}
+  @media (max-width:900px){
+    .grid.cols-4,.grid.cols-3,.grid.cols-2{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:620px){
+    .grid.cols-4,.grid.cols-3,.grid.cols-2{grid-template-columns:1fr;}
+    h1{font-size:34px;}
+    #hero h1{font-size:36px;}
+    nav .links{display:none;}
+  }
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:22px;
+  }
+  .card .icon{
+    width:42px;height:42px;border-radius:10px;background:#fde3d4;color:var(--brand);
+    display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;
+  }
+  .card ul{margin-top:10px;padding-left:18px;color:var(--muted);font-size:14px;}
+  .card ul li{margin-bottom:4px;}
+
+  /* FLOW DIAGRAM */
+  .flow{
+    display:flex;align-items:center;flex-wrap:wrap;gap:0;margin-top:36px;
+  }
+  .flow-step{
+    background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:18px 16px;min-width:150px;text-align:center;flex:1;
+    position:relative;
+  }
+  .flow-step .num{
+    width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;
+    font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;
+    margin:0 auto 10px;
+  }
+  .flow-step h4{font-size:14px;font-weight:700;margin-bottom:4px;}
+  .flow-step p{font-size:12.5px;color:var(--muted);}
+  .arrow{
+    color:var(--brand);font-size:22px;padding:0 6px;flex-shrink:0;
+  }
+  @media (max-width:900px){
+    .flow{flex-direction:column;align-items:stretch;}
+    .arrow{transform:rotate(90deg);align-self:center;padding:4px 0;}
+    .flow-step{flex:none;}
+  }
+
+  /* FEATURE TABLE */
+  table{width:100%;border-collapse:collapse;margin-top:30px;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);}
+  th,td{padding:14px 18px;text-align:left;font-size:14px;border-bottom:1px solid var(--border);}
+  th{background:#fff3ec;color:var(--brand-dark);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.04em;}
+  tr:last-child td{border-bottom:none;}
+  td.muted{color:var(--muted);}
+  .status{
+    display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;
+  }
+  .status.live{background:#e1f4e8;color:var(--green);}
+  .status.soon{background:#fdf3d4;color:#92660a;}
+  .status.partial{background:#fde3d4;color:var(--brand-dark);}
+
+  /* TIMELINE for order status */
+  .timeline{display:flex;align-items:center;margin-top:30px;flex-wrap:wrap;gap:0;}
+  .t-dot{
+    display:flex;flex-direction:column;align-items:center;flex:1;min-width:110px;
+  }
+  .t-dot .circle{
+    width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;
+    margin-bottom:8px;
+  }
+  .t-dot span{font-size:13px;font-weight:600;text-align:center;}
+  .t-line{flex:0 0 40px;height:2px;background:var(--border);margin-top:-26px;}
+  @media (max-width:900px){
+    .timeline{flex-direction:column;}
+    .t-line{display:none;}
+    .t-dot{flex-direction:row;gap:12px;width:100%;}
+    .t-dot .circle{margin-bottom:0;}
+  }
+
+  footer{
+    background:var(--bg-dark);color:#f3eee9;text-align:center;padding:60px 32px;margin-top:40px;
+  }
+  footer h2{color:#fff;}
+  footer p{color:#c9bdb3;margin-top:10px;}
+  .stack-pill{
+    background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 16px;
+    font-size:13px;font-weight:600;text-align:center;
+  }
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:30px;}
+  @media (max-width:800px){.two-col{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav>
+  <div class="brand">
+    <div class="logo">🌿</div>
+    Vanvedha
+  </div>
+  <div class="links">
+    <a href="#overview">Overview</a>
+    <a href="#roles">User Roles</a>
+    <a href="#customer-flow">Customer Journey</a>
+    <a href="#order-status">Order Lifecycle</a>
+    <a href="#vendor-admin">Retailer, Delivery &amp; Admin</a>
+    <a href="#staff">Staff &amp; Permissions</a>
+    <a href="#procurement">Procurement &amp; Processing</a>
+    <a href="#features">Features</a>
+    <a href="#tech">Tech Stack</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="logo-big">🌿</div>
+  <span class="eyebrow">Client Presentation</span>
+  <h1>Vanvedha</h1>
+  <p class="tag">Premium, ethically-sourced spices — Vanvedha is its own wholesaler and retailer, selling directly to individual customers and supplying bulk stock to retail shops, all fulfilled by one delivery network.</p>
+  <div class="badge-row">
+    <div class="badge">🛒 B2C &amp; B2B Sales</div>
+    <div class="badge">👥 5 User Roles</div>
+    <div class="badge">📦 Order Tracking</div>
+    <div class="badge">💳 Multiple Payment Options</div>
+    <div class="badge">🏭 In-House Processing</div>
+    <div class="badge">🏷️ Barcode Traceability</div>
+    <div class="badge">👷 Staff Permission Control</div>
+  </div>
+</section>
+
+<section id="overview">
+  <span class="eyebrow">01 — Overview</span>
+  <h2>What is Vanvedha?</h2>
+  <p class="lead">Vanvedha is <strong>not a multi-vendor marketplace</strong> — there is only one seller: Vanvedha itself. Vanvedha sources, processes, and owns the entire spice catalog, then sells it two ways at once: directly to individual <strong>Customers</strong> (retail), and in bulk to <strong>Retailers</strong> — shop owners who resell Vanvedha's spices in their own stores. <strong>Delivery Agents</strong> fulfill both kinds of orders, and <strong>Admin</strong> runs the whole operation.</p>
+  <div class="two-col">
+    <div class="card">
+      <div class="icon">🎯</div>
+      <h3>Goal</h3>
+      <p class="sub">Sell premium spices through two channels from one platform — single-pack retail sales to consumers, and bulk wholesale supply to retail shops — without running two separate systems.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔄</div>
+      <h3>How it works, in short</h3>
+      <p class="sub">A customer buys one or two packs at retail price for home use. A retailer buys cartons/bulk quantities at a lower wholesale price to stock their shop. Vanvedha's own delivery network fulfills both — instantly for customers, on a scheduled bulk run for retailers.</p>
+    </div>
+  </div>
+</section>
+
+<section id="roles">
+  <span class="eyebrow">02 — User Roles</span>
+  <h2>Who uses the platform?</h2>
+  <p class="lead">Five roles. Vanvedha is the only seller — Customer and Retailer are both <em>buyers</em>; Staff are internal operators with granular, Admin-assigned permissions.</p>
+  <div class="grid cols-4" style="grid-template-columns:repeat(5,1fr);">
+    <div class="card">
+      <div class="icon">🧑‍🍳</div>
+      <h3>Customer</h3>
+      <p class="sub">Retail buyer (B2C)</p>
+      <ul>
+        <li>Browse &amp; search products</li>
+        <li>Buys single packs at retail price</li>
+        <li>Cart &amp; wishlist</li>
+        <li>Checkout &amp; pay</li>
+        <li>Track orders, write reviews</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="icon">🏬</div>
+      <h3>Retailer</h3>
+      <p class="sub">Wholesale buyer (B2B)</p>
+      <ul>
+        <li>Buys in bulk at wholesale price</li>
+        <li>Requires admin approval</li>
+        <li>Submits shop &amp; GSTIN details</li>
+        <li>Tracks bulk order/delivery</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="icon">🛵</div>
+      <h3>Delivery Agent</h3>
+      <p class="sub">Vanvedha's own fulfiller</p>
+      <ul>
+        <li>Delivers customer &amp; retailer orders</li>
+        <li>Updates delivery status</li>
+        <li>Manages zone &amp; availability</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="icon">🛠️</div>
+      <h3>Admin</h3>
+      <p class="sub">The operator</p>
+      <ul>
+        <li>Approves retailers</li>
+        <li>Sets retail &amp; wholesale prices</li>
+        <li>Manages categories/tags</li>
+        <li>Creates Staff &amp; assigns permissions</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="icon">👷</div>
+      <h3>Staff</h3>
+      <p class="sub">Internal operators</p>
+      <ul>
+        <li>Module access assigned by Admin</li>
+        <li>CRUD control per module</li>
+        <li>Permission template (tag) based</li>
+        <li>Individual overrides possible</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="customer-flow">
+  <span class="eyebrow">03 — Customer Journey</span>
+  <h2>From landing page to delivery</h2>
+  <p class="lead">This is the core flow your <strong>retail customers</strong> (single-pack, B2C) will experience.</p>
+  <div class="flow">
+    <div class="flow-step"><div class="num">1</div><h4>Landing Page</h4><p>Discover the brand, featured spices</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">2</div><h4>Sign Up / Login</h4><p>Email-password or Google sign-in</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">3</div><h4>Browse Products</h4><p>Filter by category, tags, search</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">4</div><h4>Product Detail</h4><p>Variants, images, reviews &amp; ratings</p></div>
+  </div>
+  <div class="flow" style="margin-top:14px;">
+    <div class="flow-step"><div class="num">5</div><h4>Add to Cart</h4><p>Cart saved to account (Redis + DB)</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">6</div><h4>Checkout</h4><p>Choose address, apply coupon</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">7</div><h4>Payment</h4><p>Razorpay, Stripe, or Cash on Delivery</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">8</div><h4>Order Confirmed</h4><p>Confirmation screen + order tracking</p></div>
+  </div>
+</section>
+
+<section id="order-status">
+  <span class="eyebrow">04 — Order Lifecycle</span>
+  <h2>What happens after checkout?</h2>
+  <p class="lead">Every order moves through a clear, trackable status pipeline that the customer can follow from their profile.</p>
+  <div class="timeline">
+    <div class="t-dot"><div class="circle">1</div><span>Pending</span></div>
+    <div class="t-line"></div>
+    <div class="t-dot"><div class="circle">2</div><span>Confirmed</span></div>
+    <div class="t-line"></div>
+    <div class="t-dot"><div class="circle">3</div><span>Processing</span></div>
+    <div class="t-line"></div>
+    <div class="t-dot"><div class="circle">4</div><span>Shipped</span></div>
+    <div class="t-line"></div>
+    <div class="t-dot"><div class="circle">5</div><span>Delivered</span></div>
+  </div>
+  <p class="sub" style="margin-top:18px;">An order can also be <strong>Cancelled</strong> at an early stage. Pricing automatically includes 18% GST, with ₹60 shipping (free on orders above ₹499).</p>
+</section>
+
+<section id="vendor-admin">
+  <span class="eyebrow">05 — Behind the Scenes</span>
+  <h2>Retailer, Delivery &amp; Admin Workflows</h2>
+  <p class="lead">Vanvedha is the <strong>only seller</strong> on this platform — there is no multi-vendor marketplace. Customers buy single packs at retail price; Retailers buy in bulk at wholesale price to stock their own shops. Delivery Agents fulfill both, and Admin runs the whole operation.</p>
+
+  <h3 style="margin-top:40px;">🏬 Retailer — the bulk buyer</h3>
+  <p class="sub">A Retailer is a shop owner (kirana store, supermarket, spice shop, etc.) who buys Vanvedha's spices in bulk, at a lower wholesale price, to resell in their own store.</p>
+  <div class="flow" style="margin-top:18px;">
+    <div class="flow-step"><div class="num">1</div><h4>Register as Retailer</h4><p>Sign up, choose "Retailer" account type</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">2</div><h4>Submit Business Details</h4><p>Shop name, GSTIN, bank account &amp; IFSC</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">3</div><h4>Wait for Approval</h4><p>Account is locked until Admin reviews it</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">4</div><h4>Admin Approves</h4><p>Retailer is verified &amp; unlocked</p></div>
+  </div>
+  <div class="flow" style="margin-top:14px;">
+    <div class="flow-step"><div class="num">5</div><h4>Browse Wholesale Catalog</h4><p>Same products, shown at wholesale price</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">6</div><h4>Place Bulk Order</h4><p>Order by carton/bulk quantity, not single packs</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">7</div><h4>Scheduled Bulk Delivery</h4><p>Vanvedha's logistics delivers the shipment</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">8</div><h4>Stock Their Shop</h4><p>Retailer resells the spices to their own customers</p></div>
+  </div>
+  <p class="sub" style="margin-top:14px;">In short: <strong>Retailer = a buyer, not a seller on Vanvedha.</strong> They never list their own products on the platform — they only purchase from Vanvedha's catalog at the wholesale price set by Admin, in bulk, then sell it on through their own shop, outside the platform.</p>
+
+  <h3 style="margin-top:40px;">🛵 Delivery Agent — the fulfiller (for both channels)</h3>
+  <p class="sub">A Delivery Agent is Vanvedha's own rider/driver. The same role handles both order types, just with a different rhythm.</p>
+  <div class="two-col" style="margin-top:18px;">
+    <div class="card">
+      <div class="icon">👤</div>
+      <h3>Customer Orders (Retail)</h3>
+      <ul>
+        <li>Single order, assigned as soon as it's placed</li>
+        <li>Picked up &amp; delivered same-day, door to door</li>
+        <li>Status: Pending → Confirmed → Processing → Shipped → Delivered</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="icon">🏬</div>
+      <h3>Retailer Orders (Bulk)</h3>
+      <ul>
+        <li>Larger shipment, delivered on a scheduled run</li>
+        <li>Dropped at the retailer's shop, not a home address</li>
+        <li>Same status pipeline, sized for bulk quantity</li>
+      </ul>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:14px;">Agents set their vehicle type, zone, and availability — Vanvedha still owns delivery end-to-end, it's never handed off to an outside courier.</p>
+
+  <h3 style="margin-top:40px;">🛠️ Admin — the operator</h3>
+  <p class="sub">Admin is Vanvedha's own internal team, running the platform from a dedicated dashboard.</p>
+  <div class="two-col" style="margin-top:18px;">
+    <div class="card">
+      <div class="icon">✅</div>
+      <h3>Onboarding &amp; Oversight</h3>
+      <ul>
+        <li>Approves or rejects new Retailer applications</li>
+        <li>Manages Delivery Agent accounts &amp; zones</li>
+        <li>Oversees every user from one dashboard</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="icon">💲</div>
+      <h3>Pricing &amp; Catalog</h3>
+      <ul>
+        <li>Sets <strong>retail price</strong> (for customers) and <strong>wholesale price</strong> (for retailers) per product</li>
+        <li>Manages product categories and tags</li>
+        <li>Creates discount coupons &amp; moderates reviews</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px;border-color:var(--brand);">
+    <div class="icon">📌</div>
+    <h3>Where things stand today</h3>
+    <p class="sub">The codebase currently models a <strong>"Vendor"</strong> account — a shop owner who lists their own products and gets admin-approved. That's the right building block (registration, business details, admin approval are already there), but it needs to be repointed at the <strong>wholesaler/retailer concept above</strong>: rename Vendor → Retailer, remove their ability to list products, and instead give them access to a wholesale price list and a bulk-order flow.</p>
+    <p class="sub" style="margin-top:8px;">Also still to be built: a <strong>second, wholesale price</strong> on every product (today each product/variant has only one price), a <strong>bulk order type</strong> separate from a normal cart order, and the scheduled/bulk delivery flow for Delivery Agents. Until then, the platform behaves as a single retail storefront only.</p>
+  </div>
+</section>
+
+<section id="staff">
+  <span class="eyebrow">06 — Staff &amp; Permissions</span>
+  <h2>How Staff roles &amp; permissions work</h2>
+  <p class="lead">Admin can create internal Staff accounts for team members who manage specific parts of the business — order handling, accounts, catalog, procurement, etc. Each Staff member gets exactly the access they need and nothing more, controlled with CRUD-level precision per module.</p>
+
+  <h3 style="margin-top:36px;">🏷️ Step 1 — Create a Permission Template (Tag)</h3>
+  <p class="sub">A <strong>Permission Template</strong> is a reusable named preset. Admin creates it once, then assigns it to one or more Staff members. Think of it like a job-role definition.</p>
+  <div class="flow" style="margin-top:18px;">
+    <div class="flow-step"><div class="num">1</div><h4>Name the template</h4><p>e.g. "Order Manager", "Accounts Staff", "Procurement Staff"</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">2</div><h4>Pick modules</h4><p>Toggle which of the 4 modules this template covers</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">3</div><h4>Set CRUD per module</h4><p>View / Create / Edit / Delete — independently per module</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">4</div><h4>Save template</h4><p>Ready to assign to any Staff account</p></div>
+  </div>
+
+  <h3 style="margin-top:40px;">👷 Step 2 — Create a Staff account &amp; assign the template</h3>
+  <p class="sub">Each Staff member is an individual account. Admin creates them, assigns the right template, and can also add individual overrides on top of the template if one person needs slightly different access.</p>
+  <div class="flow" style="margin-top:18px;">
+    <div class="flow-step"><div class="num">5</div><h4>Create Staff account</h4><p>Admin enters name, email, password for the staff member</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">6</div><h4>Assign a template</h4><p>Pick from existing permission templates (e.g. "Order Manager")</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">7</div><h4>Optional overrides</h4><p>Fine-tune: grant or restrict specific actions for this person only</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">8</div><h4>Staff logs in</h4><p>Sees only the modules &amp; actions their permissions allow</p></div>
+  </div>
+
+  <h3 style="margin-top:40px;">🔑 The 4 permission modules</h3>
+  <p class="sub">These are the areas of the admin dashboard Staff can be given access to. Each module has its own View / Create / Edit / Delete toggles.</p>
+  <div class="grid cols-4" style="margin-top:18px;">
+    <div class="card">
+      <div class="icon" style="font-size:22px;">📦</div>
+      <h3>Orders &amp; Payments</h3>
+      <p class="sub">View order list, confirm/cancel orders, view payment records, manage refunds.</p>
+    </div>
+    <div class="card">
+      <div class="icon" style="font-size:22px;">👥</div>
+      <h3>Accounts &amp; Users</h3>
+      <p class="sub">View and manage Customer, Retailer, and Delivery Agent accounts.</p>
+    </div>
+    <div class="card">
+      <div class="icon" style="font-size:22px;">🌶️</div>
+      <h3>Catalog &amp; Reviews</h3>
+      <p class="sub">Add/edit products, categories, tags, stock levels, coupons, and moderate reviews.</p>
+    </div>
+    <div class="card">
+      <div class="icon" style="font-size:22px;">⚙️</div>
+      <h3>Procurement &amp; Processing</h3>
+      <p class="sub">Manage supplier records, raw material purchases, processing batches, and barcodes.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:40px;">📋 Example Staff configurations</h3>
+  <table style="margin-top:12px;">
+    <tr>
+      <th>Template / Tag</th>
+      <th>Orders &amp; Payments</th>
+      <th>Accounts &amp; Users</th>
+      <th>Catalog &amp; Reviews</th>
+      <th>Procurement</th>
+    </tr>
+    <tr>
+      <td><strong>Order Manager</strong></td>
+      <td class="muted">View, Edit</td>
+      <td class="muted">View only</td>
+      <td class="muted">—</td>
+      <td class="muted">—</td>
+    </tr>
+    <tr>
+      <td><strong>Accounts Staff</strong></td>
+      <td class="muted">View only</td>
+      <td class="muted">View, Create, Edit</td>
+      <td class="muted">—</td>
+      <td class="muted">—</td>
+    </tr>
+    <tr>
+      <td><strong>Catalog Manager</strong></td>
+      <td class="muted">—</td>
+      <td class="muted">—</td>
+      <td class="muted">View, Create, Edit, Delete</td>
+      <td class="muted">—</td>
+    </tr>
+    <tr>
+      <td><strong>Procurement Staff</strong></td>
+      <td class="muted">—</td>
+      <td class="muted">—</td>
+      <td class="muted">View only</td>
+      <td class="muted">View, Create, Edit</td>
+    </tr>
+    <tr>
+      <td><strong>Senior Ops</strong></td>
+      <td class="muted">Full access</td>
+      <td class="muted">View, Edit</td>
+      <td class="muted">Full access</td>
+      <td class="muted">Full access</td>
+    </tr>
+  </table>
+  <p class="sub" style="margin-top:10px;">Any individual Staff member can have their own overrides on top of their template — e.g., an Order Manager who also needs to edit catalog stock, without giving them the full Catalog Manager template.</p>
+
+  <h3 style="margin-top:40px;">🔄 How permission resolution works</h3>
+  <div class="two-col" style="margin-top:18px;">
+    <div class="card">
+      <div class="icon">🏷️</div>
+      <h3>Template (base)</h3>
+      <p class="sub">The named permission preset — defines the default access for all staff assigned to it. Changing the template instantly updates permissions for all staff using it.</p>
+    </div>
+    <div class="card">
+      <div class="icon">⚙️</div>
+      <h3>Individual override (wins)</h3>
+      <p class="sub">An override on a specific staff member always takes priority over the template. This lets Admin grant or restrict one action for one person without creating a whole new template.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px;border-color:var(--brand);">
+    <div class="icon">📌</div>
+    <h3>Where things stand today</h3>
+    <p class="sub">✅ <strong>Backend models are live:</strong> <code>STAFF</code> is a valid role in the user model; three new database tables (<code>permission_templates</code>, <code>template_module_permissions</code>, <code>staff_profiles</code>) are created and migration 0003 is applied. The permission resolution logic (template → individual override) is fully coded in <code>StaffProfile.effective_permission()</code>.</p>
+    <p class="sub" style="margin-top:8px;">✅ <strong>Admin panel partially built:</strong> The Users listing already shows Staff accounts with their amber badge and role filtering. A dedicated <strong>Staff Permissions</strong> screen in the admin panel lets Admin create and manage permission templates (with CRUD flags per module) and assign them to staff accounts.</p>
+    <p class="sub" style="margin-top:8px;">🔄 <strong>Still to build:</strong> the <strong>Staff-facing dashboard</strong> — a separate login experience that shows staff members only the modules their permissions allow, hiding everything else.</p>
+  </div>
+</section>
+
+<section id="procurement">
+  <span class="eyebrow">07 — Behind the Scenes (Supply Chain)</span>
+  <h2>Raw Material Procurement &amp; Processing</h2>
+  <p class="lead">Vanvedha doesn't just resell packaged spices — it buys whole/raw spices in bulk (raw chillies, raw turmeric, raw coriander, etc.) and processes them in-house (cleaning, drying, grinding) into the finished powders that Customers and Retailers actually buy. This is an internal operations module run by Admin/Ops — it has no customer, retailer, or delivery-agent facing side.</p>
+
+  <h3 style="margin-top:40px;">📦 Step 1 — Procurement</h3>
+  <p class="sub">Buying raw spices from farmers/suppliers and bringing them into inventory.</p>
+  <div class="flow" style="margin-top:18px;">
+    <div class="flow-step"><div class="num">1</div><h4>Record Supplier</h4><p>Admin adds supplier name &amp; contact details</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">2</div><h4>Log Purchase</h4><p>Spice type, quantity, price, date of purchase</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">3</div><h4>Generate Lot &amp; Barcode</h4><p>Each purchase becomes a raw material lot with its own barcode</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">4</div><h4>Raw Stock Updated</h4><p>Held in inventory under that lot, ready for processing</p></div>
+  </div>
+
+  <h3 style="margin-top:40px;">⚙️ Step 2 — Processing</h3>
+  <p class="sub">Turning raw spices into the finished, sellable product.</p>
+  <div class="flow" style="margin-top:18px;">
+    <div class="flow-step"><div class="num">5</div><h4>Select Raw Lot(s)</h4><p>Ops picks which raw lot &amp; quantity to process</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">6</div><h4>Process / Grind</h4><p>Clean, dry &amp; grind into powder (e.g. chilli → chilli powder)</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">7</div><h4>Create Finished Batch</h4><p>Output recorded as a new batch, linked back to the raw lot(s) used</p></div>
+    <div class="arrow">→</div>
+    <div class="flow-step"><div class="num">8</div><h4>Barcode &amp; Add to Stock</h4><p>Finished batch gets its own barcode, stock becomes sellable</p></div>
+  </div>
+
+  <div class="two-col" style="margin-top:24px;">
+    <div class="card">
+      <div class="icon">🔍</div>
+      <h3>Full Lot Traceability</h3>
+      <p class="sub">Every finished batch records exactly which raw material lot(s) it was ground from. If a quality issue ever comes up in a finished product, it can be traced straight back to the supplier and purchase it originated from.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🏷️</div>
+      <h3>Barcodes</h3>
+      <p class="sub">Both raw material lots and finished goods batches get a barcode — scan to pull up purchase/processing history, and to speed up stock counts, warehouse handling, and checkout/dispatch.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px;border-color:var(--brand);">
+    <div class="icon">📌</div>
+    <h3>Where things stand today</h3>
+    <p class="sub">✅ <strong>Fully built and live.</strong> The entire procurement &amp; processing module is implemented — backend models, REST API, database migrations, and Admin panel screens are all in place.</p>
+    <ul style="margin-top:12px;padding-left:22px;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:6px;">
+      <li>✅ <strong>Supplier model + API + admin screen</strong> — add/edit/delete supplier records with name, phone, and address</li>
+      <li>✅ <strong>Raw Material Lots model + API + admin screen</strong> — log every bulk purchase with spice type, quantity, price per kg, and purchase date; barcodes auto-generated as <code>RAW-XXXXXXXXXX</code>; stock-remaining progress bar per lot</li>
+      <li>✅ <strong>Processing Batches model + API + admin screen</strong> — record which raw lots were consumed and what finished product came out; batches start as <em>Pending</em> and must be manually confirmed</li>
+      <li>✅ <strong>Batch confirmation is atomic</strong> — confirming a batch deducts the used quantity from each raw lot and adds the pack count to the product variant's sellable stock, with row-level locking to prevent race conditions</li>
+      <li>✅ <strong>Full traceability chain</strong> — every finished batch links back to its raw lots (<code>ProcessingBatchRawUsage</code>), so a quality issue can be traced to the exact supplier purchase</li>
+      <li>✅ <strong>Barcode Lookup screen</strong> — scan or type any barcode (<code>RAW-…</code> or <code>FIN-…</code>) to instantly pull up the full record; auto-focuses between scans so the page works with a physical handheld scanner</li>
+    </ul>
+    <p class="sub" style="margin-top:12px;">The admin sidebar has a dedicated "Raw Material" section with four screens: Suppliers, Raw Material Lots, Processing Batches, and Barcode Lookup. Processing yield/wastage percentages are not tracked — just that raw stock went down and finished sellable stock went up.</p>
+  </div>
+</section>
+
+<section id="features">
+  <span class="eyebrow">08 — Feature Summary</span>
+  <h2>What's included</h2>
+  <table>
+    <tr><th>Area</th><th>Feature</th><th>Status</th></tr>
+    <tr><td>Authentication</td><td class="muted">Email/password login, Google OAuth, JWT sessions, password change</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Catalog</td><td class="muted">Categories, tags, product variants, images, ratings</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Shopping</td><td class="muted">Cart, wishlist, coupon codes</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Checkout &amp; Payments</td><td class="muted">Address management, Razorpay, Stripe, Cash on Delivery</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Orders</td><td class="muted">Order placement, status tracking, history</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Reviews</td><td class="muted">Star ratings with admin moderation</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Retailer Accounts</td><td class="muted">Business onboarding, shop/GSTIN/bank profile, admin approval (currently modeled as "Vendor" — to be repurposed)</td><td><span class="status partial">In Progress</span></td></tr>
+    <tr><td>Wholesale Pricing</td><td class="muted">A second, lower wholesale price per product for approved retailers</td><td><span class="status soon">Planned</span></td></tr>
+    <tr><td>Bulk Ordering</td><td class="muted">Carton/bulk-quantity ordering flow separate from the retail cart</td><td><span class="status soon">Planned</span></td></tr>
+    <tr><td>Delivery Agent Accounts</td><td class="muted">Agent onboarding, vehicle/zone profile, availability toggle</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Scheduled Bulk Delivery</td><td class="muted">Routing retailer bulk orders to delivery agents on a scheduled run</td><td><span class="status soon">Planned</span></td></tr>
+    <tr><td>Automatic Order Assignment</td><td class="muted">Routing retail orders to delivery agents automatically</td><td><span class="status partial">In Progress</span></td></tr>
+    <tr><td>Admin Dashboard</td><td class="muted">Users (incl. Staff), orders, products/categories/tags, coupons, reviews, delivery agents, and the full Raw Material section (Suppliers, Raw Lots, Processing Batches, Barcode Lookup)</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Staff Accounts</td><td class="muted">Staff role in user model, StaffProfile with template assignment</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Permission Templates</td><td class="muted">Named presets (e.g. "Order Manager") with CRUD flags per module</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Individual Overrides</td><td class="muted">Per-staff JSON overrides on top of their assigned template</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Staff Permissions UI</td><td class="muted">Admin screen to create/manage permission templates and assign them to staff accounts — built. Staff-facing login dashboard showing only permitted modules — still to build.</td><td><span class="status partial">In Progress</span></td></tr>
+    <tr><td>Supplier Records</td><td class="muted">Track farmers/suppliers Vanvedha buys raw spices from — model, API &amp; admin screen built</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Raw Material Purchases</td><td class="muted">Log bulk raw spice purchases with auto-barcode, track remaining stock per lot</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Processing Batches</td><td class="muted">Record grinding runs, link finished batches back to raw lots used; atomic stock update on confirm</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Barcode Tracking</td><td class="muted">Auto-generated barcodes on every raw lot (RAW-…) and finished batch (FIN-…)</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Barcode Lookup</td><td class="muted">Scan or type any barcode to pull up full record + traceability chain; scanner-ready (auto-focus)</td><td><span class="status live">Live</span></td></tr>
+    <tr><td>Notifications</td><td class="muted">Order &amp; account notifications</td><td><span class="status soon">Planned</span></td></tr>
+    <tr><td>Analytics</td><td class="muted">Sales &amp; performance dashboards</td><td><span class="status soon">Planned</span></td></tr>
+  </table>
+</section>
+
+<section id="tech">
+  <span class="eyebrow">09 — Technology</span>
+  <h2>Built on a modern, scalable stack</h2>
+  <div class="grid cols-3">
+    <div class="card">
+      <h3>Backend</h3>
+      <p class="sub">Django + Django REST Framework, JWT authentication, Razorpay &amp; Stripe SDK integrations.</p>
+    </div>
+    <div class="card">
+      <h3>Frontend</h3>
+      <p class="sub">React + Vite, TanStack Query for data fetching, Zustand for state, Tailwind CSS for styling.</p>
+    </div>
+    <div class="card">
+      <h3>Data &amp; Infra</h3>
+      <p class="sub">Relational database for core data, Redis for fast cart persistence, Docker Compose for deployment.</p>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <h2>Thank You</h2>
+  <p>Vanvedha — bringing premium, ethically-sourced spices to every kitchen.</p>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+  });
+</script>
+
+</body>
+</html>

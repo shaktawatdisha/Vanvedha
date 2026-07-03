@@ -9,49 +9,17 @@ from apps.catalog.models import Category
 
 
 CATEGORIES = [
-    # (name, description, [children])
-
-    # 1. Based on Plant Part
-    ("Spices by Plant Part", "Categorization based on part of plant used", [
-        ("Seeds", "Cumin, coriander, fennel, mustard seeds"),
-        ("Roots", "Ginger, turmeric"),
-        ("Bark", "Cinnamon and similar bark spices"),
-        ("Leaves", "Bay leaf, curry leaves"),
-        ("Flowers", "Cloves, saffron"),
-        ("Fruits", "Black pepper, cardamom"),
-    ]),
-
-    # 2. Based on Flavor Profile
-    ("Spices by Flavor", "Categorization based on taste and flavor profile", [
-        ("Hot & Spicy", "Chili, black pepper, mustard"),
-        ("Sweet", "Cinnamon, nutmeg, cardamom"),
-        ("Earthy", "Cumin, turmeric"),
-        ("Aromatic", "Cloves, star anise"),
-        ("Tangy", "Amchur, sumac"),
-    ]),
-
-    # 3. Based on Cuisine
-    ("Spices by Cuisine", "Categorization based on regional usage", [
-        ("Indian Spices", "Turmeric, cumin, garam masala"),
-        ("Mediterranean Spices", "Oregano, thyme, rosemary"),
-        ("Asian Spices", "Star anise, lemongrass, Sichuan pepper"),
-        ("Mexican Spices", "Paprika, cumin, chili powder"),
-    ]),
-
-    # 4. Based on Usage Form
-    ("Spices by Form", "Categorization based on physical form", [
-        ("Whole Spices", "Cloves, cardamom pods, cinnamon sticks"),
-        ("Ground Spices", "Turmeric powder, chili powder"),
-        ("Blended Spices", "Garam masala, curry powder"),
-    ]),
-
-    # 5. Based on Function in Cooking
-    ("Spices by Function", "Categorization based on cooking role", [
-        ("Base Flavor", "Cumin, mustard seeds"),
-        ("Coloring Agents", "Turmeric, paprika"),
-        ("Aroma Enhancers", "Cardamom, cloves"),
-        ("Heat Providers", "Chili, black pepper"),
-    ]),
+    # (name, description)
+    ("Whole Spices", "Unground whole spices that retain maximum flavour until use"),
+    ("Ground Spices", "Finely milled single spices ready to cook with"),
+    ("Spice Blends & Masalas", "Multi-spice blends crafted for specific dishes and cuisines"),
+    ("Seeds", "Aromatic culinary seeds used whole or toasted"),
+    ("Herbs & Leaves", "Dried aromatic leaves and herbs"),
+    ("Roots & Rhizomes", "Dried roots and rhizomes prized for pungency and colour"),
+    ("Peppercorns & Chilies", "Peppercorns and dried chilies for heat and pungency"),
+    ("Exotic & Rare Spices", "Rare, high-value spices sourced in limited quantities"),
+    ("Salts", "Natural and mineral-rich culinary salts"),
+    ("Gift & Sampler Packs", "Curated spice collections and gift boxes"),
 ]
 
 
@@ -65,7 +33,7 @@ def make_slug(name):
 
 
 class Command(BaseCommand):
-    help = 'Seed the database with default product categories'
+    help = 'Seed the database with 10 flat product categories'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -82,8 +50,8 @@ class Command(BaseCommand):
 
         created_total = 0
 
-        for name, description, children in CATEGORIES:
-            parent, created = Category.objects.get_or_create(
+        for name, description in CATEGORIES:
+            category, created = Category.objects.get_or_create(
                 name=name,
                 defaults={'slug': make_slug(name), 'description': description},
             )
@@ -93,21 +61,4 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(f'  Skipped (exists): {name}')
 
-            for child_name, child_desc in children:
-                child, child_created = Category.objects.get_or_create(
-                    name=child_name,
-                    defaults={
-                        'slug':        make_slug(child_name),
-                        'description': child_desc,
-                        'parent':      parent,
-                    },
-                )
-                if child_created:
-                    created_total += 1
-                    self.stdout.write(f'    Created: {child_name}')
-                else:
-                    self.stdout.write(f'    Skipped (exists): {child_name}')
-
         self.stdout.write(self.style.SUCCESS(f'\nDone. Created {created_total} categories.'))
-
-

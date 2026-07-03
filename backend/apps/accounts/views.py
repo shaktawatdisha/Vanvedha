@@ -1,10 +1,13 @@
+from django.conf import settings
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token as google_id_token
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Address
+from .models import Address, User
 from .serializers import (
     RegisterSerializer, UserSerializer, AddressSerializer,
     CustomTokenObtainPairSerializer, ChangePasswordSerializer,
@@ -29,6 +32,49 @@ class RegisterView(generics.CreateAPIView):
 
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class GoogleLoginView(APIView):
+    """Exchange a Google ID token (from Google Identity Services) for our own JWT pair."""
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        credential = request.data.get('credential')
+        if not credential:
+            return Response({'detail': 'Missing Google credential.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            idinfo = google_id_token.verify_oauth2_token(
+                credential, google_requests.Request(), settings.GOOGLE_CLIENT_ID,
+            )
+        except ValueError:
+            return Response({'detail': 'Invalid Google token.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        email = idinfo.get('email')
+        if not email or not idinfo.get('email_verified'):
+            return Response({'detail': 'Google account email is not verified.'}, status=status.HTTP_400_BAD_REQUEST)
+        email = User.objects.normalize_email(email)
+
+        user, created = User.objects.get_or_create(
+            email=email,
+            defaults={
+                'first_name': idinfo.get('given_name', '') or '',
+                'last_name': idinfo.get('family_name', '') or '',
+                'is_verified': True,
+            },
+        )
+        if created:
+            user.set_unusable_password()
+            user.save(update_fields=['password'])
+        elif not user.is_active:
+            return Response({'detail': 'Account is deactivated.'}, status=status.HTTP_403_FORBIDDEN)
+
+        tokens = RefreshToken.for_user(user)
+        return Response({
+            'user': UserSerializer(user).data,
+            'access': str(tokens.access_token),
+            'refresh': str(tokens),
+        })
 
 
 class LogoutView(APIView):

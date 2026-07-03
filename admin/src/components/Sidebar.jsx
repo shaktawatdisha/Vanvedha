@@ -6,7 +6,7 @@ const NAV = [
   { to: '/dashboard',        icon: 'dashboard',        label: 'Dashboard',       end: true },
   { divider: true, label: 'People' },
   { to: '/users',            icon: 'group',            label: 'Users'                      },
-  { to: '/vendors',          icon: 'storefront',       label: 'Vendors'                    },
+  { to: '/staff-permissions', icon: 'badge',            label: 'Staff Permissions'          },
   { to: '/delivery-agents',  icon: 'local_shipping',   label: 'Delivery Agents'            },
   { divider: true, label: 'Catalog' },
   { to: '/categories',       icon: 'category',         label: 'Categories'                 },
@@ -16,6 +16,11 @@ const NAV = [
   { to: '/orders',           icon: 'receipt_long',     label: 'Orders'                     },
   { to: '/coupons',          icon: 'local_offer',      label: 'Coupons'                    },
   { to: '/reviews',          icon: 'rate_review',      label: 'Reviews'                    },
+  { divider: true, label: 'Raw Material' },
+  { to: '/raw-material/suppliers',  icon: 'agriculture',      label: 'Suppliers'             },
+  { to: '/raw-material/raw-lots',   icon: 'weight',           label: 'Raw Material Lots'     },
+  { to: '/raw-material/batches',    icon: 'blender',          label: 'Processing Batches'    },
+  { to: '/raw-material/scan',       icon: 'barcode_scanner',  label: 'Barcode Lookup'        },
 ];
 
 export default function Sidebar() {

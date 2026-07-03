@@ -6,9 +6,7 @@ import Topbar from '../components/Topbar';
 const STAT_CARDS = (data) => [
   { label: 'Total Users',       value: data?.total_users,            icon: 'group',            color: 'indigo'  },
   { label: 'Customers',         value: data?.total_customers,        icon: 'person',           color: 'sky'     },
-  { label: 'Vendors',           value: data?.total_vendors,          icon: 'storefront',       color: 'violet'  },
   { label: 'Delivery Agents',   value: data?.total_delivery_agents,  icon: 'local_shipping',   color: 'emerald' },
-  { label: 'Pending Approvals', value: data?.pending_vendor_approvals, icon: 'pending_actions', color: 'amber'  },
   { label: 'Active Users',      value: data?.active_users,           icon: 'how_to_reg',       color: 'orange'  },
 ];
 
@@ -23,7 +21,6 @@ const COLOR_MAP = {
 
 const QUICK_LINKS = [
   { to: '/users',           icon: 'group',          label: 'Manage Users',           desc: 'Activate, verify & manage roles'    },
-  { to: '/vendors',         icon: 'storefront',      label: 'Manage Vendors',          desc: 'Approve or reject vendor requests'  },
   { to: '/delivery-agents', icon: 'local_shipping',  label: 'Manage Delivery Agents',  desc: 'Toggle availability & zone info'   },
 ];
 

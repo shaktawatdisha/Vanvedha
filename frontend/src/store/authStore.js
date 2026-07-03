@@ -23,7 +23,6 @@ export const useAuthStore = create(
 
       // Role helpers
       isAdmin:         (state) => state.user?.role === 'ADMIN',
-      isVendor:        (state) => state.user?.role === 'VENDOR',
       isDeliveryAgent: (state) => state.user?.role === 'DELIVERY',
     }),
     { name: 'auth-store', partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }) }

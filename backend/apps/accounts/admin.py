@@ -1,12 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, Address, VendorProfile, DeliveryAgentProfile, Role
-
-
-class VendorProfileInline(admin.StackedInline):
-    model = VendorProfile
-    can_delete = False
-    extra = 0
+from .models import User, Address, DeliveryAgentProfile, Role
 
 
 class DeliveryProfileInline(admin.StackedInline):
@@ -39,23 +33,9 @@ class UserAdmin(BaseUserAdmin):
         """Show profile inline only for the relevant role."""
         if obj is None:
             return []
-        if obj.role == Role.VENDOR:
-            return [VendorProfileInline]
         if obj.role == Role.DELIVERY:
             return [DeliveryProfileInline]
         return []
-
-
-@admin.register(VendorProfile)
-class VendorProfileAdmin(admin.ModelAdmin):
-    list_display  = ('shop_name', 'user', 'gstin', 'is_approved')
-    list_filter   = ('is_approved',)
-    search_fields = ('shop_name', 'user__email', 'gstin')
-    actions       = ['approve_vendors']
-
-    @admin.action(description='Approve selected vendors')
-    def approve_vendors(self, request, queryset):
-        queryset.update(is_approved=True)
 
 
 @admin.register(DeliveryAgentProfile)

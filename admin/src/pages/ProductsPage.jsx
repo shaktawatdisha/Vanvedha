@@ -6,6 +6,7 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { adminApi } from '../api/admin';
 import Topbar from '../components/Topbar';
+import Pagination from '../components/Pagination';
 
 // ── Zod schemas ────────────────────────────────────────────────────────────────
 const variantSchema = z.object({
@@ -584,15 +585,16 @@ function DeleteConfirmModal({ product, onConfirm, onClose, isPending }) {
 export default function ProductsPage() {
   const qc = useQueryClient();
   const [filters, setFilters]           = useState({ search: '', is_featured: '', is_organic: '' });
+  const [page, setPage]                 = useState(1);
   const [modal, setModal]               = useState(null);
   const [variantTarget, setVariantTarget] = useState(null);
   const [imageTarget, setImageTarget]   = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-products', filters],
+    queryKey: ['admin-products', filters, page],
     queryFn: () =>
-      adminApi.getProducts(Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))).then(r => r.data),
+      adminApi.getProducts({ ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== '')), page }).then(r => r.data),
   });
 
   const { data: categoriesRes } = useQuery({
@@ -628,7 +630,7 @@ export default function ProductsPage() {
     } catch { toast.error('Failed to load product'); }
   };
 
-  const set = (key) => (e) => setFilters(f => ({ ...f, [key]: e.target.value }));
+  const set = (key) => (e) => { setFilters(f => ({ ...f, [key]: e.target.value })); setPage(1); };
 
   return (
     <div className="flex flex-col min-h-screen bg-stone-100">
@@ -673,9 +675,9 @@ export default function ProductsPage() {
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="overflow-auto max-h-[70vh]">
               <table className="w-full">
-                <thead className="bg-stone-50 border-b border-stone-100">
+                <thead className="bg-stone-50 border-b border-stone-100 sticky top-0 z-10">
                   <tr>
                     {['Product', 'Category', 'Price', 'Variants', 'Rating', 'Tags', 'Featured', 'Actions'].map(h => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
@@ -775,11 +777,7 @@ export default function ProductsPage() {
                 </tbody>
               </table>
             </div>
-            {data?.count > 0 && (
-              <div className="px-4 py-3 border-t border-stone-100 text-xs text-stone-400">
-                Showing {data.results?.length} of {data.count} products
-              </div>
-            )}
+            <Pagination page={page} totalPages={data?.total_pages} count={data?.count} onPageChange={setPage} />
           </div>
         )}
       </div>

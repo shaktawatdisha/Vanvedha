@@ -7,7 +7,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 
-from apps.accounts.models import User, VendorProfile, DeliveryAgentProfile, Address, Role
+from apps.accounts.models import (
+    User, DeliveryAgentProfile, Address, Role,
+    PermissionTemplate, StaffProfile, StaffModule,
+)
 from apps.accounts.serializers import UserSerializer, AddressSerializer
 from apps.orders.models import Order, OrderItem
 from apps.catalog.models import Product, ProductVariant, ProductImage, Category, Tag
@@ -17,8 +20,9 @@ from apps.reviews.models import Review
 from .permissions import IsAdminRole
 from .serializers import (
     AdminUserListSerializer, AdminUserDetailSerializer,
-    AdminVendorSerializer, AdminDeliveryAgentSerializer,
+    AdminDeliveryAgentSerializer,
     AdminDashboardSerializer,
+    PermissionTemplateSerializer, StaffProfileSerializer,
 )
 
 
@@ -66,9 +70,7 @@ class AdminDashboardView(APIView):
         data = {
             'total_users':               User.objects.count(),
             'total_customers':           User.objects.customers().count(),
-            'total_vendors':             User.objects.vendors().count(),
             'total_delivery_agents':     User.objects.delivery_agents().count(),
-            'pending_vendor_approvals':  VendorProfile.objects.filter(is_approved=False).count(),
             'active_users':              User.objects.filter(is_active=True).count(),
             'inactive_users':            User.objects.filter(is_active=False).count(),
             'verified_users':            User.objects.filter(is_verified=True).count(),
@@ -96,7 +98,7 @@ class AdminUserListView(generics.ListAPIView):
     ordering            = ['-date_joined']
 
     def get_queryset(self):
-        return User.objects.exclude(is_superuser=True)
+        return User.objects.exclude(is_superuser=True).select_related('staff_profile', 'staff_profile__template')
 
 
 class AdminUserDetailView(generics.RetrieveUpdateAPIView):
@@ -164,6 +166,16 @@ class AdminChangeRoleView(APIView):
         user.role = new_role
         user.is_staff = new_role == Role.ADMIN
         user.save(update_fields=['role', 'is_staff'])
+
+        if new_role == Role.STAFF:
+            profile, _ = StaffProfile.objects.get_or_create(user=user)
+            if not profile.is_active:
+                profile.is_active = True
+                profile.save(update_fields=['is_active'])
+        elif hasattr(user, 'staff_profile'):
+            user.staff_profile.is_active = False
+            user.staff_profile.save(update_fields=['is_active'])
+
         return Response({'detail': f'Role updated to {new_role} for {user.email}.'})
 
 
@@ -177,47 +189,67 @@ class AdminUserAddressesView(generics.ListAPIView):
         return Address.objects.filter(user=user).order_by('-is_default', '-created_at')
 
 
-# ── Vendor Management ─────────────────────────────────────────────────────────
+# ── Staff Permission Templates ─────────────────────────────────────────────────
 
-class AdminVendorListView(generics.ListAPIView):
-    permission_classes  = [IsAdminRole]
-    serializer_class    = AdminVendorSerializer
-    filter_backends     = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields    = ['is_approved']
-    search_fields       = ['shop_name', 'user__email', 'gstin']
+class AdminStaffModulesView(APIView):
+    """Static list of modules staff permissions can be scoped to, for building forms."""
+    permission_classes = [IsAdminRole]
+
+    def get(self, request):
+        return Response([{'value': v, 'label': l} for v, l in StaffModule.choices])
+
+
+class AdminPermissionTemplateListView(generics.ListCreateAPIView):
+    permission_classes = [IsAdminRole]
+    serializer_class   = PermissionTemplateSerializer
+    filter_backends    = [filters.SearchFilter]
+    search_fields       = ['name', 'description']
+    pagination_class   = None
 
     def get_queryset(self):
-        return VendorProfile.objects.select_related('user').order_by('-created_at')
+        return PermissionTemplate.objects.prefetch_related('module_permissions').order_by('name')
 
 
-class AdminVendorDetailView(generics.RetrieveUpdateAPIView):
+class AdminPermissionTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminRole]
-    serializer_class   = AdminVendorSerializer
-    queryset           = VendorProfile.objects.select_related('user')
+    serializer_class   = PermissionTemplateSerializer
+    queryset           = PermissionTemplate.objects.prefetch_related('module_permissions')
 
     def update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return super().update(request, *args, **kwargs)
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.staff_members.exists():
+            return Response(
+                {'detail': 'Cannot delete a template that is still assigned to staff members.'},
+                status=status.HTTP_409_CONFLICT,
+            )
+        return super().destroy(request, *args, **kwargs)
 
-class AdminVendorApproveView(APIView):
+
+class AdminStaffProfileView(APIView):
+    """Get / assign the permission template & overrides for a single staff user."""
     permission_classes = [IsAdminRole]
 
-    def post(self, request, pk):
-        vendor = get_object_or_404(VendorProfile, pk=pk)
-        vendor.is_approved = True
-        vendor.save(update_fields=['is_approved'])
-        return Response({'detail': f'Vendor "{vendor.shop_name}" approved.'})
+    def get(self, request, id):
+        user = get_object_or_404(User, id=id)
+        profile, _ = StaffProfile.objects.get_or_create(user=user)
+        return Response(StaffProfileSerializer(profile).data)
 
-
-class AdminVendorRejectView(APIView):
-    permission_classes = [IsAdminRole]
-
-    def post(self, request, pk):
-        vendor = get_object_or_404(VendorProfile, pk=pk)
-        vendor.is_approved = False
-        vendor.save(update_fields=['is_approved'])
-        return Response({'detail': f'Vendor "{vendor.shop_name}" rejected.'})
+    def patch(self, request, id):
+        user = get_object_or_404(User, id=id)
+        if user.role != Role.STAFF:
+            return Response(
+                {'detail': 'User must have the Staff role before permissions can be assigned.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        profile, _ = StaffProfile.objects.get_or_create(user=user)
+        serializer = StaffProfileSerializer(profile, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 # ── Delivery Agent Management ─────────────────────────────────────────────────

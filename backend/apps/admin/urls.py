@@ -5,8 +5,8 @@ from .views import (
     AdminUserListView, AdminUserDetailView,
     AdminUserActivateView, AdminUserDeactivateView,
     AdminUserVerifyView, AdminChangeRoleView, AdminUserAddressesView,
-    AdminVendorListView, AdminVendorDetailView,
-    AdminVendorApproveView, AdminVendorRejectView,
+    AdminStaffModulesView, AdminStaffProfileView,
+    AdminPermissionTemplateListView, AdminPermissionTemplateDetailView,
     AdminDeliveryAgentListView, AdminDeliveryAgentDetailView,
     AdminOrderListView, AdminOrderDetailView, AdminOrderUpdateStatusView,
     AdminCategoryListView, AdminCategoryDetailView,
@@ -35,12 +35,12 @@ urlpatterns = [
     path('users/<uuid:id>/verify/',                        AdminUserVerifyView.as_view(),                   name='admin-user-verify'),
     path('users/<uuid:id>/change-role/',                   AdminChangeRoleView.as_view(),                   name='admin-change-role'),
     path('users/<uuid:id>/addresses/',                     AdminUserAddressesView.as_view(),                name='admin-user-addresses'),
+    path('users/<uuid:id>/staff-profile/',                 AdminStaffProfileView.as_view(),                 name='admin-user-staff-profile'),
 
-    # Vendor management
-    path('vendors/',                                       AdminVendorListView.as_view(),                   name='admin-vendor-list'),
-    path('vendors/<int:pk>/',                              AdminVendorDetailView.as_view(),                 name='admin-vendor-detail'),
-    path('vendors/<int:pk>/approve/',                      AdminVendorApproveView.as_view(),                name='admin-vendor-approve'),
-    path('vendors/<int:pk>/reject/',                       AdminVendorRejectView.as_view(),                 name='admin-vendor-reject'),
+    # Staff permission templates
+    path('staff-modules/',                                 AdminStaffModulesView.as_view(),                 name='admin-staff-modules'),
+    path('permission-templates/',                          AdminPermissionTemplateListView.as_view(),       name='admin-permission-template-list'),
+    path('permission-templates/<int:pk>/',                 AdminPermissionTemplateDetailView.as_view(),     name='admin-permission-template-detail'),
 
     # Delivery agent management
     path('delivery-agents/',                               AdminDeliveryAgentListView.as_view(),            name='admin-delivery-list'),
