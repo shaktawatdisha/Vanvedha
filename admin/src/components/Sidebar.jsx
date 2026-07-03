@@ -8,6 +8,7 @@ const NAV = [
   { divider: true, label: 'People' },
   { to: '/users',            icon: 'group',            label: 'Users',                      module: 'accounts_users' },
   { to: '/staff-permissions', icon: 'badge',            label: 'Staff Permissions',          adminOnly: true },
+  { to: '/staff-payroll',    icon: 'payments',         label: 'Staff Payroll',              module: 'payroll' },
   { to: '/delivery-agents',  icon: 'local_shipping',   label: 'Delivery Agents',            module: 'accounts_users' },
   { divider: true, label: 'Catalog' },
   { to: '/categories',       icon: 'category',         label: 'Categories',                 module: 'catalog_reviews' },

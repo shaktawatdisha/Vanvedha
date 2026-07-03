@@ -14,6 +14,7 @@ import CategoriesPage      from './pages/CategoriesPage';
 import TagsPage            from './pages/TagsPage';
 import CouponsPage         from './pages/CouponsPage';
 import ReviewsPage              from './pages/ReviewsPage';
+import PayrollPage             from './pages/PayrollPage';
 import SuppliersPage           from './pages/SuppliersPage';
 import RawLotsPage             from './pages/RawLotsPage';
 import ProcessingBatchesPage   from './pages/ProcessingBatchesPage';
@@ -36,6 +37,7 @@ export default function App() {
             <Route path="/dashboard"       element={<DashboardPage />} />
             <Route path="/users"           element={<UsersPage />} />
             <Route path="/staff-permissions" element={<StaffPermissionsPage />} />
+            <Route path="/staff-payroll"     element={<PayrollPage />} />
             <Route path="/delivery-agents" element={<DeliveryAgentsPage />} />
             <Route path="/orders"          element={<OrdersPage />} />
             <Route path="/products"        element={<ProductsPage />} />

@@ -96,4 +96,18 @@ export const adminApi = {
 
   // Barcode lookup (searches both raw lots and processing batches)
   barcodeLookup: (barcode) => api.get('/procurement/lookup/', { params: { barcode } }),
+
+  // Payroll — Staff Salaries
+  getStaffSalaries:   (params)   => api.get('/payroll/salaries/', { params }),
+  createStaffSalary:  (data)     => api.post('/payroll/salaries/', data),
+  updateStaffSalary:  (id, data) => api.patch(`/payroll/salaries/${id}/`, data),
+  deleteStaffSalary:  (id)       => api.delete(`/payroll/salaries/${id}/`),
+
+  // Payroll — Salary Payments
+  getSalaryPayments:     (params)   => api.get('/payroll/payments/', { params }),
+  createSalaryPayment:   (data)     => api.post('/payroll/payments/', data),
+  updateSalaryPayment:   (id, data) => api.patch(`/payroll/payments/${id}/`, data),
+  deleteSalaryPayment:   (id)       => api.delete(`/payroll/payments/${id}/`),
+  markSalaryPaymentPaid: (id)       => api.post(`/payroll/payments/${id}/mark-paid/`),
+  generatePayroll:       (month)    => api.post('/payroll/payments/generate/', { month }),
 };

@@ -16,6 +16,7 @@ class StaffModule(models.TextChoices):
     ACCOUNTS_USERS   = 'accounts_users',   'Accounts & Users'
     CATALOG_REVIEWS  = 'catalog_reviews',  'Catalog & Reviews'
     PROCUREMENT      = 'procurement',      'Procurement & Processing'
+    PAYROLL          = 'payroll',          'Staff Payroll'
 
 
 class UserManager(BaseUserManager):

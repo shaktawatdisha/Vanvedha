@@ -3,6 +3,7 @@
 export const ROUTE_MODULES = {
   '/users':                     'accounts_users',
   '/delivery-agents':           'accounts_users',
+  '/staff-payroll':             'payroll',
   '/categories':                'catalog_reviews',
   '/tags':                      'catalog_reviews',
   '/products':                  'catalog_reviews',
